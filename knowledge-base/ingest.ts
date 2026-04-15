@@ -1,8 +1,8 @@
 /**
  * Knowledge Base Ingestion Script
  *
- * Chunks markdown files, generates embeddings via OpenAI,
- * and upserts them into the Supabase pgvector knowledge_items table.
+ * Splits markdown files at H2 (##) boundaries, generates embeddings via OpenAI,
+ * and upserts them into the Supabase knowledge_base table.
  *
  * Usage:
  *   npx tsx knowledge-base/ingest.ts
@@ -13,7 +13,7 @@
  */
 
 import { readFileSync, readdirSync, statSync } from "fs";
-import { join, relative, extname } from "path";
+import { join, relative, basename, extname } from "path";
 import { createClient } from "@supabase/supabase-js";
 import OpenAI from "openai";
 import { config } from "dotenv";
@@ -21,9 +21,7 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 const EMBEDDING_MODEL = "text-embedding-3-small";
-const CHUNK_SIZE = 512; // tokens (approximate — we use character count as proxy)
-const CHUNK_OVERLAP = 64;
-const CHARS_PER_TOKEN = 4; // rough approximation
+const MIN_CHUNK_CHARS = 50;
 
 const ROLE_MAP: Record<string, string> = {
   "product-owner": "product-owner",
@@ -31,26 +29,20 @@ const ROLE_MAP: Record<string, string> = {
   shared: "shared",
 };
 
-// ------ Chunking -------
+// ------ Chunking by H2 -------
 
-function chunkText(text: string, chunkChars: number, overlapChars: number): string[] {
-  const chunks: string[] = [];
-  let start = 0;
-
-  while (start < text.length) {
-    const end = Math.min(start + chunkChars, text.length);
-    chunks.push(text.slice(start, end).trim());
-    start = end - overlapChars;
-    if (start >= text.length) break;
-  }
-
-  return chunks.filter((c) => c.length > 50);
+function splitByH2(content: string): string[] {
+  // Split at H2 boundaries — each chunk includes its own ## heading for context
+  const sections = content.split(/\n(?=## )/);
+  return sections
+    .map((s) => s.trim())
+    .filter((s) => s.length >= MIN_CHUNK_CHARS);
 }
 
 // ------ File discovery -------
 
-function findMarkdownFiles(dir: string): Array<{ path: string; role: string }> {
-  const results: Array<{ path: string; role: string }> = [];
+function findMarkdownFiles(dir: string): Array<{ path: string; role: string; topic: string }> {
+  const results: Array<{ path: string; role: string; topic: string }> = [];
 
   function walk(currentDir: string): void {
     for (const entry of readdirSync(currentDir)) {
@@ -62,7 +54,8 @@ function findMarkdownFiles(dir: string): Array<{ path: string; role: string }> {
         const parts = rel.split(/[\\/]/);
         const roleFolder = parts[0] ?? "shared";
         const role = ROLE_MAP[roleFolder] ?? "shared";
-        results.push({ path: fullPath, role });
+        const topic = basename(entry, ".md");
+        results.push({ path: fullPath, role, topic });
       }
     }
   }
@@ -88,49 +81,59 @@ async function main(): Promise<void> {
   const openai = new OpenAI({ apiKey: openaiKey });
 
   const kbDir = join(process.cwd(), "knowledge-base");
-  const files = findMarkdownFiles(kbDir).filter((f) => !f.path.endsWith("ingest.ts"));
+  const files = findMarkdownFiles(kbDir);
 
-  console.log(`Found ${files.length} markdown files.`);
+  console.log(`Found ${files.length} markdown files.\n`);
 
   let totalChunks = 0;
-  let totalInserted = 0;
+  let totalUpserted = 0;
 
-  for (const { path, role } of files) {
+  for (const { path, role, topic } of files) {
     const content = readFileSync(path, "utf-8");
     const source = relative(kbDir, path).replace(/\\/g, "/");
-    const chunks = chunkText(content, CHUNK_SIZE * CHARS_PER_TOKEN, CHUNK_OVERLAP * CHARS_PER_TOKEN);
+    const chunks = splitByH2(content);
 
-    console.log(`  ${source}: ${chunks.length} chunks`);
+    console.log(`${source}: ${chunks.length} chunks`);
     totalChunks += chunks.length;
 
-    for (const chunk of chunks) {
+    for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
+      const chunk = chunks[chunkIndex] ?? "";
+      if (!chunk) continue;
+
       const embeddingResponse = await openai.embeddings.create({
         model: EMBEDDING_MODEL,
         input: chunk,
       });
 
       const embedding = embeddingResponse.data[0]?.embedding;
-      if (!embedding) continue;
-
-      const { error } = await supabase.from("knowledge_items").insert({
-        content: chunk,
-        source,
-        role,
-        embedding,
-      });
-
-      if (error) {
-        console.error(`    Error inserting chunk: ${error.message}`);
-      } else {
-        totalInserted++;
+      if (!embedding) {
+        console.error(`  [skip] chunk ${chunkIndex} — no embedding returned`);
+        continue;
       }
 
-      // Rate limit: OpenAI free tier ~3 RPM for embeddings
+      const { error } = await supabase.from("knowledge_base").upsert(
+        {
+          role,
+          topic,
+          chunk_index: chunkIndex,
+          content: chunk,
+          embedding,
+        },
+        { onConflict: "role,topic,chunk_index" }
+      );
+
+      if (error) {
+        console.error(`  [error] chunk ${chunkIndex}: ${error.message}`);
+      } else {
+        totalUpserted++;
+      }
+
+      // Respect OpenAI rate limits (free tier: ~3 RPM for embeddings)
       await new Promise((r) => setTimeout(r, 200));
     }
   }
 
-  console.log(`\nDone. ${totalInserted}/${totalChunks} chunks inserted.`);
+  console.log(`\nDone. ${totalUpserted}/${totalChunks} chunks upserted.`);
 }
 
 main().catch((err: unknown) => {

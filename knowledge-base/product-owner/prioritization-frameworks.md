@@ -1,66 +1,83 @@
 # Prioritization Frameworks
 
-## Why Prioritization Is Hard
+## Why Prioritization Frameworks Matter
 
-Prioritization is a zero-sum game: saying yes to one thing means saying no to another. Without a framework, decisions default to whoever argues loudest, most recently, or with most seniority. Frameworks make the trade-offs explicit and defensible.
+Without a framework, backlog prioritization defaults to whoever speaks loudest (HiPPO effect), most recently requested (recency bias), or easiest to build (effort bias). Prioritization frameworks bring structure, transparency, and defensibility to ordering decisions. They also create a shared language for conversations with stakeholders about trade-offs.
 
-## WSJF — Weighted Shortest Job First (SAFe)
+No framework is perfect. The goal is consistency and explicitness — not false precision.
 
-Best for: large backlogs with items of varying size and value.
+## RICE Scoring
 
-**Formula:** WSJF = Cost of Delay / Job Duration
+RICE combines four factors into a numeric score. Use it when you have quantitative data about reach and impact.
 
-**Cost of Delay** = User/Business Value + Time Criticality + Risk Reduction / Opportunity Enablement
+**Formula:** `(Reach × Impact × Confidence) / Effort`
 
-Score each component 1–10, sum for Cost of Delay, divide by effort (also 1–10). Higher WSJF = do first.
+- **Reach**: How many users/customers are affected per time period (e.g., per quarter)? Use actual data from analytics where possible.
+- **Impact**: How much does this move the needle for each person reached? Use a scale: 3 = massive, 2 = significant, 1 = moderate, 0.5 = low, 0.25 = minimal.
+- **Confidence**: How confident are you in the above estimates? 100% = high confidence, 80% = medium, 50% = low. Gut-feel estimates should be 50%.
+- **Effort**: Total person-months of work across all functions (product, design, engineering).
 
-**Practical tip:** Use relative scoring. Ask "is this worth more or less than item X?" rather than absolute values.
+**When to use:** Product roadmap prioritization with analytics data available. Particularly effective when comparing features that serve different user segments.
 
-## MoSCoW
+**Pitfall:** RICE can be gamed by inflating Reach and Confidence. Require evidence for any Confidence score above 80%.
 
-Best for: release scoping and stakeholder alignment.
+## WSJF (Weighted Shortest Job First)
 
-| Category | Definition | Guidance |
-|----------|-----------|---------|
-| **Must Have** | Non-negotiable for the release | If removed, the product fails or is illegal |
-| **Should Have** | Important but not vital | High value, would hurt to omit |
-| **Could Have** | Nice to have | Include if time/budget allows |
-| **Won't Have** | Explicitly excluded this release | Sets expectations, may appear in future |
+WSJF comes from SAFe (Scaled Agile Framework) and prioritizes items that deliver cost of delay the fastest. It is ideal for PI planning and program-level backlogs.
 
-**Watch out:** MoSCoW inflation — stakeholders want everything as Must Have. Challenge rigorously: "What happens if we ship without this?"
+**Formula:** `Cost of Delay / Job Duration`
+
+**Cost of Delay** = User/Business Value + Time Criticality + Risk Reduction/Opportunity Enablement (each scored 1–21 using Fibonacci)
+
+**Job Duration** is a relative size estimate (also Fibonacci).
+
+**When to use:** Large-scale agile programs coordinating multiple teams. Best when items have different urgency profiles — some decay quickly if delayed, others don't.
+
+**Pitfall:** WSJF requires team consensus on relative scoring, which takes practice. Don't apply it to individual user stories — use it at the feature or epic level.
+
+## MoSCoW Method
+
+MoSCoW categorizes backlog items into four buckets for a given release or sprint:
+
+| Category | Meaning |
+|----------|---------|
+| **Must Have** | Non-negotiable; the release fails without this |
+| **Should Have** | High value; include if possible, but the release ships without it |
+| **Could Have** | Nice to have; include only if time and capacity permit |
+| **Won't Have (this time)** | Explicitly out of scope for this release |
+
+**Rule of thumb:** Must Haves should be no more than 60% of total estimated effort. If everything is a Must Have, the categorization is broken.
+
+**When to use:** Release scoping, MVP definition, stakeholder alignment workshops. Particularly effective when you need a fast group decision with multiple stakeholders in the room.
+
+**Pitfall:** MoSCoW is subjective. Different stakeholders will categorize the same item differently. Facilitate the conversation explicitly — don't let individuals pre-classify their own requests.
 
 ## Kano Model
 
-Best for: understanding customer delight vs dissatisfaction.
+The Kano model classifies features by the relationship between implementation and customer satisfaction:
 
-| Category | Characteristic | Strategy |
-|----------|---------------|---------|
-| **Basic needs** | Expected; absence = dissatisfaction | Must deliver these |
-| **Performance** | More = more satisfaction | Invest proportionally |
-| **Delighters** | Unexpected; presence = delight | Differentiate here |
-| **Indifferent** | Users don't care either way | Deprioritize |
-| **Reverse** | Presence causes dissatisfaction | Avoid |
+- **Basic (Must-Be) Quality**: Expected features. Their absence causes strong dissatisfaction; their presence is neutral. Example: a mobile app that doesn't crash.
+- **Performance Quality**: Linear relationship — more is better. Example: faster page load times.
+- **Excitement (Delighter) Quality**: Unexpected features that create delight. Their absence is neutral; their presence creates strong positive response. Example: a personalized onboarding experience.
+- **Indifferent Quality**: Features users don't care about either way. Cut these.
+- **Reverse Quality**: Features some users dislike. Add only for specific segments.
 
-## Impact vs Effort Matrix
+**When to use:** Discovery and strategy phases, feature concept evaluation, differentiation decisions. Kano is a qualitative tool — use surveys or user interviews to classify features.
 
-Best for: quick team alignment, not high-stakes decisions.
-
-Plot items on a 2x2: Impact (Y axis) × Effort (X axis):
-- **Quick wins** (high impact, low effort) — do first
-- **Major projects** (high impact, high effort) — plan carefully
-- **Fill-ins** (low impact, low effort) — do when capacity allows
-- **Avoid** (low impact, high effort) — don't do
-
-## OKR-Aligned Prioritization
-
-Items directly contributing to an active Objective score higher. Score each backlog item: "Does this advance OKR X? By how much?" Items with no OKR connection are candidates for removal.
+**Pitfall:** Delighters become Basic requirements over time (iPhone touchscreen, for example). Re-evaluate Kano classification each product generation.
 
 ## Choosing the Right Framework
 
-| Situation | Recommended Framework |
-|-----------|----------------------|
-| Large SAFe programme | WSJF |
-| Release scope negotiation | MoSCoW |
-| Product discovery | Kano |
-| Sprint planning | Impact vs Effort |
-| Quarterly planning | OKR alignment |
+| Situation | Best Framework |
+|-----------|----------------|
+| Quantitative data available, comparing many features | RICE |
+| SAFe/program-level planning, multiple teams | WSJF |
+| Release scoping with stakeholders in the room | MoSCoW |
+| Early discovery, differentiating MVP features | Kano |
+| Quick gut-check triage | MoSCoW |
+
+In practice, combine frameworks: use Kano to classify features in discovery, MoSCoW to scope the release, and RICE to order items within the Must Have bucket.
+
+## Communicating Prioritization Decisions
+
+When explaining a prioritization decision to stakeholders, always state: what framework was used, what inputs drove the score, and what was deprioritized as a result. Transparency prevents HiPPO overrides and builds stakeholder trust in the process over time.

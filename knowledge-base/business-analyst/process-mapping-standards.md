@@ -1,81 +1,81 @@
 # Process Mapping Standards
 
-## Why Process Maps Matter
+## Purpose of Process Maps
 
-Process maps make invisible work visible. They reveal handoffs, decision points, bottlenecks, and rework loops that no one has documented — or even consciously noticed. A BA's process map is often the first time an organisation sees its own processes clearly.
+Process maps document how work flows through a system — who does what, in what order, with what decisions and exceptions. They serve multiple purposes: discovering requirements hidden in the current-state process, aligning stakeholders on a shared understanding, identifying inefficiencies and pain points, and providing a baseline for measuring improvement after implementation.
 
-## Types of Process Maps
+A process map answers: What triggers the process? Who performs each activity? What decisions are made? What can go wrong? What does the process produce?
 
-### Swimlane Diagram (Cross-Functional Flowchart)
-Best for: Showing who does what and where handoffs occur.
-- Each row = one actor (person, team, or system)
-- Flow moves between lanes at handoff points
-- Highlights accountability and interface points
+## When to Use Swim Lane Diagrams
 
-### Value Stream Map
-Best for: Identifying waste and improvement opportunities.
-- Shows time spent in each step vs waiting time
-- Distinguishes value-adding from non-value-adding activities
-- Common in Lean / manufacturing-influenced contexts
+Swim lane diagrams (also called cross-functional flowcharts) are the standard for business process mapping when multiple roles or departments are involved. Each lane represents one actor (person, role, team, or system). Activities sit in the lane of the actor responsible for performing them.
 
-### BPMN (Business Process Model and Notation)
-Best for: Formal, unambiguous process documentation for technical audiences.
-- Standardised notation (events, activities, gateways, flows)
-- Suitable for process automation and system design
-- Steep learning curve — use only where formality is required
+**Use swim lane diagrams when:**
+- The process crosses organizational boundaries
+- Handoffs between parties are a primary source of delay or error
+- You need to show accountability clearly for compliance documentation
+- You are mapping an as-is process to identify improvement opportunities
 
-### Simple Flowchart
-Best for: Quick documentation, stakeholder walkthroughs.
-- Shapes: rectangle (process step), diamond (decision), parallelogram (input/output), oval (start/end)
-- Appropriate for most BA documentation
+**Use a simple flowchart (single lane) when:**
+- The process involves only one actor
+- You are documenting a decision tree or branching logic
+- You need a quick reference card, not a full analysis artifact
 
-## Process Map Best Practices
+## Standard Notation
 
-### Before You Map
-1. Define the scope: what triggers the process (start event) and what ends it (end event)?
-2. Identify all actors involved — people and systems
-3. Walk the process yourself or observe it before mapping
+Use BPMN (Business Process Model and Notation) or a consistent internal notation. Key symbols:
 
-### While You Map
-- Map the **as-is** process first (current state), even if it's messy
-- Use present-tense verbs: "Receive order", "Approve request", not "Order is received"
-- Every decision diamond must have at least 2 labelled paths
-- Label all arrows between swimlanes
-- Note system names next to automated steps
+| Symbol | Meaning |
+|--------|---------|
+| Rounded rectangle | Activity / Task |
+| Diamond | Decision / Gateway (Yes/No or branching) |
+| Circle (thin border) | Start event |
+| Circle (thick border) | End event |
+| Arrow | Sequence flow (direction of process) |
+| Dashed arrow | Message flow (cross-boundary communication) |
+| Document icon | Artifact / Output produced |
 
-### After You Map
-- Walk through the map with process owners to validate
-- Identify: bottlenecks (where does work queue up?), rework loops (where does work come back?), handoff failures (where do things get lost?)
-- Create the **to-be** process map showing the improved state
-- Document the delta between as-is and to-be as requirements
+Consistency matters more than strict BPMN compliance. Use whichever symbols your audience recognizes, and include a legend.
 
-## Swimlane Template Structure
+## Swim Lane Layout Conventions
 
-```
-[Trigger Event] → [Step 1: Actor A] → [Handoff] → [Step 2: Actor B]
-                                           ↓
-                                     [Decision?]
-                                    Yes ↓    No →  [Alternative path]
-                                    [Step 3]
-                                       ↓
-                                  [End Event]
-```
+- **Left-to-right flow** is standard (time flows left to right)
+- **Top-to-bottom lane order** should reflect authority or process initiation — the actor who triggers the process should be in the top lane
+- **Label every lane** with the role, not the person's name
+- **Label every decision diamond** with a question (e.g., "Approved?")
+- **Label every flow arrow** out of a decision diamond with Yes/No or the branch condition
+- **Keep lanes to six or fewer** — more than six lanes creates a diagram too wide to read. If you have more actors, consider splitting into a sub-process map.
 
-## Notation Standards for Text-Based Process Maps
+## Annotating Pain Points
 
-When producing textual process maps (as this tool does), use:
+When mapping an as-is (current state) process, annotate pain points directly on the diagram using a consistent convention:
 
-- **→** for sequential flow
-- **[Actor]** for responsibility
-- **<Decision>** for gateways
-- **//if yes//** and **//if no//** for branches
-- **[System]** for automated steps
-- **(waiting)** for delays or queues
+- **Lightning bolt icon (or red annotation):** High-friction activity, rework, or common error point
+- **Clock icon (or orange annotation):** Significant wait time or delay
+- **Question mark annotation:** Step that varies by individual — inconsistent execution
+- **Document icon annotation:** Manual data re-entry or report generation that could be automated
 
-## Common Process Mapping Mistakes
+For each annotation, add a note: the nature of the pain point, estimated frequency, and estimated business impact. These annotations drive the requirements for the future-state process.
 
-- Mapping the "ideal" process instead of what actually happens
-- Missing exception/error paths
-- Too much detail (individual keystrokes) or too little (skipping key steps)
-- Not showing which steps are manual vs automated
-- Assuming every swimlane actor sees the same information
+## As-Is vs To-Be Maps
+
+Always document the as-is process before designing the to-be. Teams that jump directly to the future state make incorrect assumptions about what currently exists and miss requirements hiding in current-state workarounds.
+
+**As-is map:** Accurate reflection of current reality, including unofficial workarounds. Do not document how the process is supposed to work — document how it actually works. Use observation and interviews to verify against written SOPs.
+
+**To-be map:** The target future state. Every difference from the as-is map represents a change that must be designed, built, tested, and adopted. The gap between as-is and to-be is the scope of the change.
+
+## Process Map Review Checklist
+
+Before finalizing a process map, verify:
+- Every swim lane is labeled with a role (not a person)
+- Every decision diamond has at least two labeled outgoing flows
+- Every flow has a defined start event and at least one end event
+- No activity is "floating" (every step connects to the next)
+- Sub-processes are either fully expanded or clearly labeled as a collapsed sub-process
+- Stakeholders who perform each lane have reviewed and confirmed accuracy
+- Pain point annotations are documented in the associated requirements list
+
+## Process Metrics to Capture
+
+Alongside the map, record: average cycle time for the full process, average wait time at each handoff, error rate at each decision point, and volume (transactions per day/week). These metrics establish the baseline for measuring improvement after the solution is implemented.

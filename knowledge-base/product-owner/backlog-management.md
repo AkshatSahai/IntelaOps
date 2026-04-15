@@ -1,69 +1,66 @@
 # Backlog Management
 
-## The Product Backlog
+## What a Healthy Backlog Looks Like
 
-The product backlog is an ordered list of everything that might be done to improve the product. It is the single source of work for the Scrum Team and is never complete — it evolves as the product and environment change.
+A healthy product backlog is a living artifact, not a static list. It contains work at multiple levels of detail: near-term items are small, well-defined, and sprint-ready; mid-term items are sized but not yet fully refined; far-term items may be epics or placeholders. The top of the backlog is clean and actionable; the bottom is intentionally rough.
 
-**Key properties:**
-- Owned by the Product Owner
-- Visible and transparent to all stakeholders
-- Ordered (not prioritised — ordering implies sequence and dependency)
-- Items at the top are more detailed and refined than items lower down
+A healthy backlog is also finite and curated. A backlog with 400+ items that nobody reviews is a false comfort — it creates an illusion of completeness while hiding real gaps and obsolete ideas.
 
-## Backlog Health Indicators
+## Definition of Ready
 
-A healthy backlog has:
-- **2–3 sprints of refined stories** at the top, ready for sprint planning
-- **Epics and themes** in the middle (partially understood)
-- **Raw ideas and placeholders** at the bottom
-- **No zombie stories** — items that have been there for 6+ months without progress
+A story is "ready" for sprint planning when it meets all of the following conditions:
 
-## Refinement (Grooming)
+1. **Written in user story format** with a clear "so that" clause
+2. **INVEST criteria met** — independent, estimable, small, testable
+3. **Acceptance criteria defined** — at least the happy path and primary error scenario
+4. **Dependencies identified** — known blockers are surfaced and either resolved or accepted
+5. **Design complete** (where applicable) — UI mockups or wireframes reviewed and approved
+6. **Estimate agreed** — team has provided a relative size estimate in planning poker
 
-Backlog refinement is an ongoing activity (not just a meeting) in which the team adds detail, estimates, and order to backlog items.
+Stories that don't meet the Definition of Ready should not enter a sprint. The cost of pulling in a not-ready story is higher than the cost of having spare capacity and pulling in a smaller ready story.
 
-**Refinement meeting guidelines:**
-- Timebox to 10% of sprint capacity (1 day per 2-week sprint)
-- Aim to have stories for the next 2 sprints refined and estimated
-- Invite developers and testers — they provide estimation and feasibility input
-- Output: stories are INVEST-compliant, have acceptance criteria, and are estimated
+## Refinement Cadence
 
-**Questions to answer for each story:**
-1. Is the value clear?
-2. Do we understand the scope?
-3. Are acceptance criteria written?
-4. Can we estimate it?
-5. Are there dependencies?
-6. Is it small enough?
+Backlog refinement (grooming) should be a regular, time-boxed ceremony — typically once per sprint, targeting stories for the next one or two sprints. The goal is to ensure the top 10–15 items in the backlog are always sprint-ready.
 
-## Backlog Ordering Principles
+**Refinement agenda:**
+1. Review any stories that moved to the top since the last session
+2. Walk through acceptance criteria and answer open questions
+3. Break down large stories that are approaching the planning horizon
+4. Estimate new stories using planning poker
+5. Remove stories that have become obsolete or deprioritized
 
-Order by a combination of:
-- **Business value** (revenue, cost savings, customer satisfaction)
-- **Risk** (higher risk items earlier to learn faster)
-- **Dependencies** (items that unlock other items come first)
-- **Strategic alignment** (items tied to active OKRs or roadmap themes)
+Refinement should not exceed 10% of the team's total sprint capacity (about 4 hours for a two-week sprint). If refinement takes longer, the backlog is too large or requirements are too unstable.
 
-## Keeping the Backlog Clean
+## Backlog Hygiene
 
-- **Archive** stories that are more than 2 product versions old and have never been started
-- **Merge** duplicate stories
-- **Split** stories that have grown too large due to scope creep in comments
-- **Delete** stories where the underlying need has changed — don't just deprioritise forever
-- **Review** the bottom 30% quarterly — if items haven't moved up, ask why they're still there
+**Triage new requests immediately.** Every new item that enters the backlog should be triaged within one business day: is this worth keeping? If yes, assign it to a rough priority bucket (now, next, later). If no, close it with a note explaining why.
 
-## Communicating Backlog Status to Stakeholders
+**Set expiry dates on speculative items.** If a story hasn't been refined or prioritized in 90 days, archive it. Ideas that are genuinely valuable resurface; ideas that disappear when archived were never a priority.
 
-Use a **Now / Next / Later** roadmap view rather than exposing the raw backlog:
-- **Now**: What the team is doing this sprint
-- **Next**: What's refined and ready for the next 1–2 sprints
-- **Later**: Themes and epics planned for future quarters (not committed dates)
+**Merge duplicates aggressively.** Duplicate stories fragment discussion and create confusion about what was actually built. When in doubt, merge and link.
 
-Avoid giving stakeholders specific dates unless they are truly committed. Use quarters or milestones instead.
+**Separate bugs from features.** Bugs are often pushed down the backlog indefinitely. Maintain a separate bug queue with its own prioritization rules — severity and frequency should drive bug priority, not stakeholder relationships.
 
-## The Product Owner's Daily Backlog Habits
+## Prioritization within the Backlog
 
-1. Check for new requests (from support, stakeholders, analytics) and add to backlog
-2. Re-order based on any new information received
-3. Review in-progress stories for blockers or scope questions
-4. Update stakeholders on items they're waiting for
+The backlog is ordered, not just categorized. Every item has exactly one position. Use a prioritization framework (RICE, MoSCoW, WSJF) consistently to justify ordering, especially when items are competing for the same sprint.
+
+Apply a time horizon lens to the top of the backlog:
+- **Now (next 1-2 sprints):** Sprint-ready, estimated, accepted by team
+- **Next (next quarter):** Sized, refined enough for effort estimation
+- **Later (beyond the quarter):** Described, not yet detailed
+
+Items in "Later" should not be detailed extensively — requirements change, and over-specifying far-future items wastes effort.
+
+## Triage Techniques
+
+**Impact vs. Effort matrix**: Quick visual for stakeholder workshops. Plot items on a 2×2 with impact (high/low) on Y and effort (high/low) on X. High impact, low effort = do immediately. Low impact, high effort = do not do.
+
+**Now/Next/Later roadmap**: Stakeholder-friendly alternative to a prioritized list. Communicates sequencing without committing to dates.
+
+**Weighted voting**: Give stakeholders a fixed number of votes and ask them to allocate across items. Surfaces consensus priorities and reduces HiPPO dynamics.
+
+## Backlog Review Meetings
+
+A monthly backlog review with key stakeholders (not the full refinement session) keeps the backlog aligned with business priorities. Agenda: review the top 15 items, confirm they still reflect current priorities, surface any new work that needs to be inserted, and retire any items whose time has passed. Keep it to 60 minutes.

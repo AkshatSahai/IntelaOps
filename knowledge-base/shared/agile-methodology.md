@@ -1,75 +1,69 @@
 # Agile Methodology Fundamentals
 
-## The Agile Manifesto
+## Core Agile Principles for Product Roles
 
-Four values (left side is valued more than right):
-1. **Individuals and interactions** over processes and tools
-2. **Working software** over comprehensive documentation
-3. **Customer collaboration** over contract negotiation
-4. **Responding to change** over following a plan
+The Agile Manifesto's four values are not abstractions — they are daily decision guides for product owners and business analysts:
 
-Twelve principles guide application of these values. The most important for product and BA work:
-- Deliver working software frequently (weeks, not months)
-- Business people and developers work together daily
-- Welcome changing requirements, even late in development
-- Simplicity — the art of maximising work not done — is essential
+1. **Individuals and interactions over processes and tools**: A 10-minute conversation with a developer beats a 5-page requirements document. Face time reduces misunderstanding.
+2. **Working software over comprehensive documentation**: Shipping a working increment gets real feedback. Polished documentation without working software creates false confidence.
+3. **Customer collaboration over contract negotiation**: Stakeholders are partners in shaping the product, not parties to a contract. Requirements will change — plan for collaboration, not compliance.
+4. **Responding to change over following a plan**: The plan serves the goal; the goal doesn't serve the plan. When circumstances change, update the plan.
 
-## Scrum Framework
+None of these values eliminates documentation, planning, or process. They establish what to prioritize when the two come into conflict.
 
-### Roles
-- **Product Owner**: owns the backlog, sets priorities, represents stakeholder interests
-- **Scrum Master**: removes impediments, coaches the team on Scrum
-- **Development Team**: self-organising, cross-functional, builds the product
+## Sprint Ceremonies and the Role of PO/BA
 
-### Events
-| Event | Purpose | Timebox (2-week sprint) |
-|-------|---------|------------------------|
-| Sprint Planning | Select backlog items and create sprint plan | 4 hours |
-| Daily Scrum | Synchronise and identify impediments | 15 minutes |
-| Sprint Review | Demo to stakeholders, inspect increment | 2 hours |
-| Sprint Retrospective | Improve team process | 1.5 hours |
-| Backlog Refinement | Elaborate and estimate backlog items | ~1 day ongoing |
+**Sprint Planning** (first day of sprint, up to 2 hours per sprint week)
+The product owner presents the top-priority stories and explains the sprint goal. The team asks clarifying questions, estimates stories that lack estimates, and commits to what can be completed. BA inputs: refined requirements, answered open questions, acceptance criteria finalized.
 
-### Artefacts
-- **Product Backlog**: ordered list of all desired work
-- **Sprint Backlog**: selected items for the sprint + plan to deliver them
-- **Product Increment**: the sum of all completed work, potentially shippable
+**Daily Standup** (15 minutes, every day)
+Three questions: What did I do yesterday? What will I do today? What is blocking me? The PO attends as an observer and dependency resolver — not as a reporter. If blockers relate to requirements clarity, the PO should schedule immediate follow-up. Standups are not status meetings; they are synchronization events.
 
-## Kanban
+**Sprint Review / Demo** (last day of sprint, up to 1 hour per sprint week)
+The team demonstrates working software to stakeholders. The product owner accepts or rejects stories against acceptance criteria. Stakeholders provide feedback that informs upcoming backlog items. This is the primary feedback loop — if stakeholders are not attending, the loop is broken.
 
-Kanban is a continuous flow system (vs Scrum's sprint-based iterations).
+**Sprint Retrospective** (after review, up to 45 minutes per sprint week)
+The team reflects on the process: What went well? What didn't? What will we change? The PO and BA participate fully. Common topics: requirements clarity gaps, ceremony effectiveness, communication bottlenecks.
 
-Key practices:
-- Visualise the workflow (Kanban board)
-- Limit work in progress (WIP limits per column)
-- Manage flow (measure cycle time, identify bottlenecks)
-- Make policies explicit (definition of ready, definition of done per stage)
-- Improve collaboratively
+**Backlog Refinement** (mid-sprint, 5–10% of sprint capacity)
+Product owner and BA collaborate with the team to detail upcoming stories, resolve open questions, and estimate new items. Stories should be sprint-ready two sprints ahead of when they will be worked.
 
-Kanban suits teams with unpredictable, incoming work (support, maintenance, ops).
+## Definition of Ready
 
-## Scaled Agile (SAFe, LeSS)
+A story is ready for sprint planning when it meets all of these criteria:
+- Written in user story format with clear business value
+- INVEST criteria satisfied (independent, negotiable, valuable, estimable, small, testable)
+- Acceptance criteria defined and reviewed with the team
+- Dependencies identified and either resolved or accepted
+- Design artifacts attached where applicable
+- Team has estimated the story
 
-For programmes with multiple teams:
+Pulling not-ready stories into a sprint is the primary cause of mid-sprint confusion and sprint goal failure.
 
-**SAFe Programme Increment (PI)** planning: all teams align on a 10-week plan, identifying dependencies and risks across teams.
+## Definition of Done
 
-**Key constructs:**
-- **Epic**: large initiative spanning multiple teams/PIs
-- **Feature**: unit of value deliverable within one PI by one ART
-- **Story**: unit of work for one team in one sprint
+The Definition of Done (DoD) is the team-level checklist that all stories must satisfy to be accepted:
+- Code reviewed and merged
+- Unit and integration tests written and passing
+- Deployed to staging environment
+- Acceptance criteria verified (either by PO or automated test)
+- No new lint errors or type errors introduced
+- Documentation updated if applicable
 
-BAs in SAFe typically operate at the feature/epic level, translating business needs into features for Product Managers, who then own the team-level backlog with Product Owners.
+The DoD is agreed upon by the team and product owner. It is not adjusted per-story. Stories that don't meet the DoD are not done — they return to the backlog.
 
-## Agile vs Waterfall Trade-offs
+## Velocity and Capacity Planning
 
-| Dimension | Agile | Waterfall |
-|-----------|-------|-----------|
-| Requirements | Emergent, evolving | Defined upfront |
-| Risk | Managed through iteration | Managed through planning |
-| Feedback | Frequent (each sprint) | Late (at delivery) |
-| Change | Welcomed | Costly and formal |
-| Documentation | Enough, not exhaustive | Comprehensive |
-| Best for | Complex, uncertain domains | Stable, well-understood domains |
+**Velocity** is the average number of story points completed per sprint over the last 3–5 sprints. It is a planning tool, not a performance metric. Using velocity to compare teams or pressure individuals is an anti-pattern.
 
-Avoid false dichotomies — many organisations use hybrid approaches, with formal documentation at programme level and agile execution at team level.
+**Capacity planning:** Calculate actual available hours per person per sprint (accounting for ceremonies, PTO, and other commitments), then use historical velocity to estimate how many story points fit in the next sprint.
+
+Do not plan to 100% capacity. Leave 15–20% buffer for unplanned work, refinement, and surprises. Teams that plan to 100% routinely fail to hit sprint goals.
+
+## Agile Roles in Practice
+
+**Product Owner** holds the product vision, owns the backlog, and is the primary voice of the customer to the development team. One PO per product — shared ownership creates conflicting priorities.
+
+**Business Analyst** (in agile contexts) bridges the gap between business stakeholders and the development team. BAs support elicitation, requirements detailing, process mapping, and acceptance criteria definition. In smaller teams, the PO and BA roles may be combined.
+
+**Scrum Master / Agile Coach** facilitates ceremonies, removes organizational impediments, and coaches the team on agile practices. The Scrum Master does not manage the team or the backlog.

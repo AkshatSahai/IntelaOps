@@ -2,82 +2,90 @@
 
 ## Why Stakeholder Analysis Matters
 
-Requirements don't come from documents — they come from people. Understanding who your stakeholders are, what they need, how much influence they have, and how they relate to each other is foundational to successful requirements work.
+Every project has stakeholders who can accelerate it, slow it, or kill it. Stakeholder analysis maps who those people are, what they care about, how much influence they have, and what their current disposition toward the project is. Without this analysis, BAs and POs engage stakeholders reactively — discovering opposition only when it becomes visible resistance.
 
-A stakeholder you miss at the start will find you at the end — usually at the point when they can cause the most disruption.
+Effective stakeholder analysis enables proactive engagement: bringing the right people in at the right time, addressing concerns before they escalate, and building the coalitions needed to move work forward.
 
-## Identifying Stakeholders
+## Power/Interest Grid
 
-Start broadly, then narrow. Ask:
-- Who is affected by the outcome of this project?
-- Who can affect the outcome?
-- Who has an interest in the outcome (even if not directly involved)?
-- Who are the end users? Who manages them?
-- Who funds it? Who signs off?
-- Who are the regulators or compliance gatekeepers?
-- Who does the current process touch (even peripherally)?
+The power/interest grid classifies stakeholders on two dimensions:
+- **Power:** How much authority or influence does this person have over the project's outcome?
+- **Interest:** How much does this person care about the project's outcome?
 
-**Categories:** Sponsors, decision-makers, subject matter experts (SMEs), end users, IT/technical teams, vendors, regulators, customers, affected departments.
+This produces four quadrants with distinct engagement strategies:
 
-## Power/Interest Matrix
+| Quadrant | Characteristics | Strategy |
+|----------|----------------|---------|
+| **High Power / High Interest** | Decision-makers, sponsors, key users | Manage closely — frequent, two-way communication |
+| **High Power / Low Interest** | Senior executives, board members | Keep satisfied — regular updates, no surprises |
+| **Low Power / High Interest** | Subject matter experts, end users | Keep informed — gather input, manage expectations |
+| **Low Power / Low Interest** | Peripheral departments, observers | Monitor — minimal engagement, inform as needed |
 
-Plot stakeholders on a 2x2 grid:
-
-|  | **Low Interest** | **High Interest** |
-|--|--|--|
-| **High Power** | Keep Satisfied | Manage Closely |
-| **Low Power** | Monitor | Keep Informed |
-
-**Manage Closely**: Your core engagement group. Regular updates, workshops, sign-off requests.
-**Keep Satisfied**: May not care about details, but can block the project — keep them happy at a high level.
-**Keep Informed**: Engaged, but limited ability to influence — newsletters, demos, regular comms.
-**Monitor**: Check in periodically; they may shift quadrant as the project evolves.
+Map your stakeholders in this grid at the start of every significant initiative. Re-map quarterly or when organizational changes occur.
 
 ## RACI Matrix
 
-Assigns responsibility for each deliverable or decision:
+RACI defines roles in decision-making and work execution:
 
-| | Responsible | Accountable | Consulted | Informed |
-|--|--|--|--|--|
-| **Definition** | Does the work | Owns the outcome (1 per task) | Provides input | Receives updates |
+- **Responsible:** The person who performs the work. One per task, or confusion follows.
+- **Accountable:** The person who owns the outcome. Exactly one per decision or deliverable — never more.
+- **Consulted:** Stakeholders whose input is needed before the work is complete. Two-way communication.
+- **Informed:** Stakeholders who need to know about the outcome. One-way communication.
 
-**Rules:**
-- Only one "Accountable" per task (multiple leads to diffusion of responsibility)
-- "Responsible" can be shared
-- Avoid over-consulting — it slows decisions
-- "Informed" means one-way communication; don't expect responses
+**Common RACI mistakes:**
+- Multiple people as Accountable for the same item (dilutes ownership)
+- Consulting too many people (slows decisions)
+- Not distinguishing Consulted from Informed (over-communicating wastes time; under-communicating creates surprises)
 
-## Stakeholder Register
+Use RACI for: major deliverables, key decisions, approval gates, and recurring process activities.
 
-Maintain a living register with:
+## Disposition Assessment
 
-| Field | Description |
-|-------|-------------|
-| Name | Full name and title |
-| Organisation / Team | Who they represent |
-| Role on project | Sponsor, SME, user, etc. |
-| Interest | What they care about |
-| Influence | H/M/L |
-| Engagement approach | How you'll communicate |
-| Concerns / risks | What might make them difficult |
-| Notes | Important context |
+Beyond power and interest, assess each stakeholder's current disposition toward the initiative:
 
-## Managing Difficult Stakeholders
+| Disposition | Description | Engagement Approach |
+|-------------|-------------|---------------------|
+| Champion | Actively promotes the initiative | Leverage as sponsor advocate |
+| Supporter | Positive, will help if asked | Keep engaged, give meaningful roles |
+| Neutral | No strong opinion either way | Inform and include selectively |
+| Skeptic | Doubts value but not actively opposed | Address concerns directly; provide evidence |
+| Opponent | Actively working against the initiative | Understand root objection; involve early |
+| Blocker | Has power and will use it to stop progress | Escalate to sponsor; find common ground |
 
-**The Blocker**: Has power and uses it. Engage early, understand their concerns, involve them in problem definition — not just solution review.
+Skeptics and opponents are not problems to suppress — they often identify real risks. Engage them early in requirements definition, where their concerns can shape the solution rather than derail it.
 
-**The Ghost**: Hard to get time with. Find their delegate. Send written summaries to keep them informed and create an audit trail.
+## Communication Planning
 
-**The Scope Creeper**: Adds requirements constantly. Redirect to the change control process; record all requests; show impact on timeline/cost.
+A stakeholder communication plan defines: who receives what information, in what format, at what frequency, from whom.
 
-**The Conflicting Stakeholder**: Has requirements that contradict others. Facilitate a direct conversation between conflicting parties — don't try to resolve it yourself.
+**Communication types:**
+- **Status updates:** Regular cadence (weekly, bi-weekly) for active stakeholders. Keep to one page or five minutes.
+- **Decision requests:** Structured briefings with a clear ask and decision deadline.
+- **Escalations:** When a decision is blocked or a risk materializes. Bring facts, options, and a recommendation.
+- **Milestone reviews:** At key delivery checkpoints — demonstrate progress, confirm alignment, surface new requirements.
 
-## Stakeholder Engagement Planning
+**Format by audience:**
+- Executive sponsors: Executive summary, business outcomes, risks requiring decisions
+- Project team: Detailed status, technical issues, upcoming dependencies
+- End users: Training updates, change timeline, what's changing for them
 
-For each "Manage Closely" stakeholder, define:
-- Frequency of touchpoints
-- Format (meeting, email update, demo, workshop)
-- Owner (who manages the relationship)
-- Next action and date
+## Identifying Hidden Stakeholders
 
-Review the stakeholder register at project milestones — stakeholder positions shift as projects progress.
+The stakeholders listed in a project charter are rarely all the stakeholders. Surface hidden stakeholders by asking:
+- Who will be directly affected by the change in process or system?
+- Whose data or workflows feed into or out of this process?
+- Who approves budget or headcount affected by this initiative?
+- Which regulatory or compliance teams must sign off?
+- Are there external stakeholders (customers, partners, vendors) who are affected?
+
+Re-run this exercise after the first round of interviews — stakeholders frequently mention others they consider relevant who were missed in the initial list.
+
+## Maintaining the Stakeholder Register
+
+The stakeholder register is a living document. Update it when:
+- Organizational changes shift stakeholder roles or influence
+- A new stakeholder emerges during requirements gathering
+- A stakeholder's disposition changes (a neutral becomes a blocker after a demo)
+- Project scope changes bring new teams into scope
+
+At minimum, review and update the register at the start of each project phase.

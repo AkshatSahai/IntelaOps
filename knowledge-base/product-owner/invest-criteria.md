@@ -1,98 +1,62 @@
 # INVEST Criteria — Deep Dive
 
-## Overview
+## Overview of INVEST
 
-INVEST is a mnemonic for evaluating user story quality. Stories that fail INVEST are candidates for refinement before entering a sprint.
+INVEST is an acronym coined by Bill Wake that defines the properties of a high-quality user story. It serves as both a writing guide and a review checklist. A story that fails any INVEST criterion is not sprint-ready — it needs refinement before the team can commit to it. Each letter represents a distinct quality dimension, and they compound: a non-independent story is also usually not small, and a non-testable story is usually not estimable.
 
 ## I — Independent
 
-**Goal:** Each story can be developed, tested, and released independently.
+Stories should be deliverable in any order without requiring other stories to be completed first. Dependencies create scheduling complexity, block parallel work, and inflate sprint planning risk.
 
-**Why it matters:** Dependencies create scheduling constraints, bottlenecks, and make sprint planning harder. They also prevent the team from reordering the backlog freely.
+**How to achieve independence:**
+- Split stories along data or workflow lines rather than technical layers
+- Avoid stories like "Build the data model for X" that must precede "Display X to the user" — combine them or reframe as a vertical slice
+- If two stories genuinely depend on each other, consider merging them into one or elevating to an epic with a clear sequencing note
 
-**How to achieve it:**
-- Split stories along business value lines, not technical layers
-- If two stories always go together, merge them into one
-- Use spike stories to resolve technical dependencies before implementation stories are planned
-- Accept some duplication at the architecture level to preserve story independence
-
-**Red flags:** "This must be done before story X", "We need the backend ticket first"
+**Example of a dependent story (bad):** "As a developer, I need the authentication API to be built so I can implement the login form."
+**Independent reframe:** "As a user, I want to log in with my email and password so that I can access my account." (The API and form are both part of this story's scope.)
 
 ## N — Negotiable
 
-**Goal:** Stories are not fixed contracts. The details are open to discussion.
+A story is not a contract. The details — how exactly it works, which edge cases to handle, the precise visual treatment — are open for discussion until the sprint begins. The card is an invitation to a conversation, not a specification to implement literally.
 
-**Why it matters:** Treating stories as specifications kills collaboration. The team should be empowered to suggest better solutions.
+**What is negotiable:** Implementation approach, exact UI behavior, edge case handling, scope boundary, order of sub-features.
+**What is not negotiable:** The underlying user need and the business value. Negotiate the "how," not the "why."
 
-**How to achieve it:**
-- Write stories with minimal implementation detail
-- Store options and decisions in comments, not the story body
-- Re-open scope discussions at refinement if new information emerges
-
-**Red flags:** Stories with detailed wireframes, specific API contracts, or technology prescriptions embedded in the description
+**Sign of a non-negotiable story:** The acceptance criteria are written at the pixel level, or the story specifies a particular technology choice. Push back and ask: "What outcome are we actually trying to achieve?"
 
 ## V — Valuable
 
-**Goal:** Every story delivers value to the end user or business — not just technical teams.
+Every story must deliver value to a user or the business. Stories that only serve technical purposes — refactoring, infrastructure changes, schema migrations — should be framed as enablers for future user-visible value, or bundled into a story that produces visible value.
 
-**Why it matters:** Stories that only deliver value when combined with other stories are incomplete. If a story could be cancelled and nobody would care, it's not valuable enough.
+**Test for value:** "If we skipped this story entirely, would any user notice or care?" If yes, it's valuable. If no, reconsider whether it belongs as a standalone story.
 
-**How to achieve it:**
-- Always write the "so that" clause — it forces articulation of value
-- Ask: "Who benefits if we ship just this story?"
-- Refactoring stories are valid if they reduce future costs or risks (frame the value accordingly)
-
-**Red flags:** Missing "so that" clause, value only realised when combined with 3 other stories
+**Valuable framing:** Even technical stories can be framed with value. "Migrate the database to PostgreSQL" becomes "As a product owner, I want query performance to support 100k concurrent users so that we can launch to the enterprise segment."
 
 ## E — Estimable
 
-**Goal:** The team can estimate the effort required.
+If a team cannot estimate a story, they cannot plan with it. Stories become non-estimable for three reasons: the story is too large to reason about, the domain is too unfamiliar, or there is too much ambiguity in the requirements.
 
-**Why it matters:** If you can't estimate a story, you can't plan a sprint. Inestimable stories signal missing information or unknowns.
+**Remedies by cause:**
+- Too large: Split into smaller stories
+- Domain unfamiliar: Schedule a spike (time-boxed research task) to reduce uncertainty before estimation
+- Too ambiguous: Conduct a refinement session to clarify acceptance criteria until the team agrees on scope
 
-**How to achieve it:**
-- Use spike stories to explore unknowns before estimation
-- Break complex domain problems into smaller, more understood pieces
-- Ensure the team has enough context (domain knowledge, technical background)
-
-**Red flags:** "We need to investigate before we can estimate", very high story points (>13)
+A spike should itself be estimable (e.g., "2 days of research to evaluate three authentication library options"). Spikes are not open-ended.
 
 ## S — Small
 
-**Goal:** A story fits within one sprint (ideally a few days of work).
+Stories should fit within a single sprint. As a rule of thumb, a single developer or pair should be able to complete a story within two to three days of focused work. Stories larger than 8 story points almost always need splitting.
 
-**Why it matters:** Large stories are hard to estimate, test, and complete within a sprint. They hide complexity and create end-of-sprint surprises.
+**Why small matters:** Small stories reduce risk, enable faster feedback, create clearer progress signals, and simplify code review. Large stories hide complexity, block review until late in the sprint, and make sprint commitments unreliable.
 
-**How to achieve it:**
-- Use story splitting patterns (by workflow step, data variation, user role)
-- Aim for stories that can be completed in 1–3 days by one developer
-- Epics are for planning horizons beyond one sprint — break them down before sprint planning
-
-**Red flags:** Story points > 8, multiple distinct user interactions in one story
+**Small does not mean trivial.** A story can be genuinely complex and still be small if it is well-scoped. Complexity lives in the technical implementation; smallness is about the scope of the user-visible outcome.
 
 ## T — Testable
 
-**Goal:** There is a clear way to verify the story is done.
+A story is testable when it has clear, verifiable acceptance criteria that allow a person (or automated test) to determine pass or fail without interpretation.
 
-**Why it matters:** Untestable stories create ambiguity about what "done" means. Testing should be possible before or during development (TDD/BDD).
+**Non-testable stories use vague language:** "The UI should feel responsive." "The page should load quickly." "Users should find it intuitive."
+**Testable rewrites:** "The page should load within 1.5 seconds on a 4G connection." "The list should update within 200ms of a filter change." "Users can complete the onboarding flow without accessing help documentation."
 
-**How to achieve it:**
-- Write at least 3 acceptance criteria in Given/When/Then format
-- Include both happy path and key failure scenarios
-- Avoid acceptance criteria with subjective language ("looks good", "performs well")
-
-**Red flags:** No acceptance criteria, acceptance criteria with subjective language, stories that can only be tested by users in production
-
-## INVEST Scoring Template
-
-| Criterion | Pass (1) | Fail (0) | Notes |
-|-----------|----------|----------|-------|
-| Independent | | | |
-| Negotiable | | | |
-| Valuable | | | |
-| Estimable | | | |
-| Small | | | |
-| Testable | | | |
-| **Total** | /6 | | |
-
-Stories scoring 4 or below should be refined before sprint planning.
+Testability is the enforcement mechanism for all the other INVEST properties. A story without acceptance criteria cannot be confirmed valuable, cannot be estimated accurately, and cannot be declared done.

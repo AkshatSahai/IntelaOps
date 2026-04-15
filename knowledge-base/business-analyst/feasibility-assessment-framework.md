@@ -1,95 +1,97 @@
 # Feasibility Assessment Framework
 
-## What Is a Feasibility Assessment?
+## Purpose of Feasibility Assessment
 
-A feasibility assessment evaluates whether a proposed initiative is viable before significant resources are committed. It answers the question: "Should we do this?" — separate from "Can we do this technically?"
+A feasibility assessment evaluates whether a proposed solution can realistically be built and delivered within the constraints of the organization. It is conducted before significant investment in solution design, to avoid committing resources to a solution that cannot succeed.
 
-Conduct a feasibility assessment before writing a BRD for large or novel initiatives.
+The goal is not to find reasons to reject initiatives — it is to surface risks early enough to address them, reframe the approach, or make an informed go/no-go decision. A well-conducted feasibility assessment is a risk management tool, not a gate.
 
-## The Five Dimensions of Feasibility
+## The Five Dimensions
 
-### 1. Technical Feasibility
+### Technical Feasibility
 
-Can we build this with available or obtainable technology?
+Does the organization have (or can it acquire) the technology and technical expertise to build the solution?
 
-**Questions to investigate:**
-- Does the technology exist and is it mature enough?
-- Do we have the skills in-house, or would we need to hire/outsource?
-- Does it integrate with our existing technology landscape?
-- What are the technical risks (scalability, security, data migration)?
+Key questions:
+- Does the required technology exist and is it proven at the needed scale?
+- Can the solution integrate with existing systems? What are the API or data exchange constraints?
+- Are there performance, security, or reliability requirements that current infrastructure cannot support?
+- Does the development team have the skills required, or will new talent need to be hired or contracted?
+- Are there technology standards or architecture constraints that limit solution options?
 
-**Red flags:** Dependency on unproven technology, significant skills gaps, major integration complexity
+**Output:** List of technical risks with likelihood and impact ratings. For each risk: mitigation approach or the additional information needed to assess it.
 
-### 2. Operational Feasibility
+### Operational Feasibility
 
-Can the organisation operate this solution once delivered?
+Will the organization be able to adopt and operate the solution once it is built?
 
-**Questions to investigate:**
-- Will users adopt it, or will they resist?
-- What training is required?
-- What support processes need to change?
-- What happens to existing processes and roles?
+Key questions:
+- Do the affected users have the skills to operate the new solution, or is training required?
+- Does the solution require a change in business processes? Is the organization ready to change?
+- Is there adequate operational support capacity (help desk, maintenance, monitoring)?
+- What is the change management plan? Who sponsors the change?
+- How will the solution be supported after go-live, and at what cost?
 
-**Red flags:** Large change management effort, no executive sponsorship, impacted teams not consulted
+**Output:** Change readiness assessment. Identified training needs. Support model definition. Change sponsor identified.
 
-### 3. Economic / Financial Feasibility
+### Financial Feasibility
 
-Is the return worth the investment?
+Is the expected return on investment sufficient to justify the cost and risk of the initiative?
 
-**Components:**
-- **Cost estimates**: development, infrastructure, licensing, training, ongoing support
-- **Benefit estimates**: revenue uplift, cost savings, productivity gains, risk reduction
-- **ROI / Payback period**: when does investment break even?
-- **NPV / IRR**: for capital projects
+Key inputs:
+- **Cost to build:** Development, infrastructure, licensing, testing, training
+- **Cost to operate:** Hosting, support, maintenance, licensing renewals
+- **Expected benefits:** Revenue increase, cost reduction, efficiency gain, risk reduction
+- **Payback period:** How many months/years until cumulative benefits exceed total costs?
 
-**Approach:** Build cost ranges (optimistic/pessimistic), not false precision. State assumptions explicitly.
+Use a simple ROI calculation: `ROI = (Net Benefit / Total Cost) × 100%`
 
-### 4. Schedule Feasibility
+For larger initiatives, use NPV (Net Present Value) to account for the time value of money.
 
-Can we deliver this in the required timeframe?
+**Output:** High-level cost-benefit analysis with explicit assumptions stated. Sensitivity analysis showing how ROI changes if key assumptions are wrong by ±20%.
 
-**Questions to investigate:**
-- Is the deadline driven by business need or arbitrary pressure?
-- Do we have the capacity (team bandwidth)?
-- Are there external dependencies (regulatory deadlines, partner timelines)?
-- What happens if we miss the deadline?
+### Regulatory and Legal Feasibility
 
-**Red flags:** Team already at capacity, dependencies on third parties with no SLA
+Does the proposed solution comply with relevant laws, regulations, and contractual obligations?
 
-### 5. Legal and Regulatory Feasibility
+Key areas to assess:
+- Data privacy regulations (GDPR, CCPA, HIPAA depending on jurisdiction and data type)
+- Industry-specific regulations (financial services, healthcare, government)
+- Contractual obligations with existing vendors or customers
+- Intellectual property considerations (open-source licenses, third-party content)
+- Accessibility requirements (WCAG compliance, ADA)
 
-Does the solution comply with applicable laws and regulations?
+**Output:** Regulatory checklist with compliance status for each applicable regulation. Legal review required for any item with uncertain status.
 
-**Areas to check:**
-- Data protection (GDPR, CCPA, industry-specific regulations)
-- Financial regulations (if applicable)
-- Intellectual property and licensing
-- Contractual obligations with current vendors
+### Timeline Feasibility
 
-**Red flags:** Unclear regulatory applicability, legal review not yet engaged
+Can the solution be delivered within the required timeframe given resource availability and complexity?
 
-## Feasibility Assessment Output
+Key questions:
+- What is the business deadline and what drives it (contract, regulatory, market window)?
+- What is the realistic delivery estimate based on team velocity and solution complexity?
+- Are the required resources available, or are they committed to other projects?
+- What is the minimum viable solution that meets the deadline?
 
-Produce a summary matrix:
+**Output:** Preliminary delivery estimate with confidence level. Identified resource constraints. Options for phased delivery if full scope cannot meet the deadline.
 
-| Dimension | Rating | Key Findings | Risks |
-|-----------|--------|-------------|-------|
-| Technical | Green/Amber/Red | | |
-| Operational | Green/Amber/Red | | |
-| Economic | Green/Amber/Red | | |
-| Schedule | Green/Amber/Red | | |
-| Legal/Regulatory | Green/Amber/Red | | |
+## Conducting the Assessment
 
-**Recommendation:** Proceed / Proceed with conditions / Do not proceed
+A feasibility assessment is not a solo desk exercise. For each dimension:
+1. Identify subject matter experts (technical architect, operations manager, finance, legal, program manager)
+2. Conduct focused interviews or workshops with each SME
+3. Document findings, risks, and open questions
+4. Present to sponsor with a clear recommendation
 
-Include the conditions for Amber items that would change the rating to Green.
+The assessment deliverable should include: a one-page executive summary with the overall feasibility verdict, findings by dimension, top risks with mitigations, and the recommended next steps.
 
-## When Feasibility Is Skipped
+## Feasibility Verdict Options
 
-Skipping feasibility leads to:
-- Projects cancelled mid-delivery (wasted investment)
-- Solutions that can't be operated by the business
-- Budget overruns from underestimated complexity
-- Legal/compliance issues discovered too late
+| Verdict | Meaning |
+|---------|---------|
+| Feasible | Proceed to solution design |
+| Feasible with conditions | Proceed if [specific conditions] are met first |
+| Feasible with modifications | The proposed scope/approach needs to change |
+| Infeasible | Do not proceed; the initiative cannot succeed as proposed |
 
-Even a lightweight feasibility check (2–3 hours of analysis) on a small initiative saves time downstream.
+"Infeasible" is rarely a final answer — it usually means "infeasible as currently conceived." The BA's role is to identify what would need to change to make it feasible.

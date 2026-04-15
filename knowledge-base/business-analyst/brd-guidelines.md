@@ -1,89 +1,64 @@
 # Business Requirements Document (BRD) Guidelines
 
-## What a BRD Is
+## Purpose and Audience
 
-A BRD is a formal document that captures what a business needs — not how a system will deliver it. It describes the business problem, the solution scope, and the requirements that a solution must satisfy.
+A Business Requirements Document (BRD) captures the business problem, the objectives of solving it, and what the solution must achieve — without prescribing how to build it. It is the contract between the business and the delivery team before solution design begins.
 
-It is distinct from a Functional Specification (which describes system behaviour) and a Technical Specification (which describes how to build it).
+**Primary audience:** Executive sponsors, project steering committees, and solution architects who need to understand scope and objectives before approving investment.
+**Secondary audience:** Business analysts and developers who use it as the source of truth for requirements traceability.
 
-## When to Write a BRD
+A BRD answers "why" and "what," not "how." If a BRD contains implementation details (database tables, API contracts, UI layouts), those belong in a Functional Requirements Document or Technical Design Document instead.
 
-Write a BRD when:
-- The initiative is large, cross-functional, or high-stakes
-- Multiple vendors or systems are involved and formal sign-off is required
-- Regulatory or compliance requirements must be documented
-- The project will go through a formal approval or governance process
+## Essential Sections
 
-A BRD may be overkill for a small feature change within an existing product. Use your judgement about formality vs agility.
+**1. Executive Summary** (half page maximum)
+The problem statement, the proposed solution in one sentence, the estimated business impact, and the requested budget/timeline. Written for a reader who will read only this section.
 
-## Standard BRD Structure
+**2. Business Objectives**
+Measurable goals the solution must achieve. Tie each objective to a business metric: revenue, cost reduction, time-to-market, compliance. Example: "Reduce customer onboarding time from 14 days to 3 days, reducing acquisition cost by an estimated 20%."
 
-### 1. Executive Summary
-- Business problem or opportunity (2–3 sentences)
-- Proposed solution direction (high level)
-- Key stakeholders and sponsor
+**3. Scope**
+In-scope: what the solution will address. Out-of-scope: what is explicitly excluded and why. A clear out-of-scope section prevents scope creep and sets stakeholder expectations. Use a table for clarity.
 
-### 2. Business Context
-- Background: why is this being done now?
-- Current state: how does the business operate today?
-- Pain points: what is failing, costly, or missing?
-- Business objectives: what does success look like?
+**4. Business Requirements**
+Numbered, atomic requirements. Each requirement describes an observable business capability or constraint. Format: "The system must enable [role] to [action] so that [business outcome]." Number them (BR-001, BR-002) for traceability.
 
-### 3. Scope
-- **In scope**: features, processes, and systems included
-- **Out of scope**: explicitly excluded items (prevents scope creep)
-- **Assumptions**: what you're treating as true without confirmation
-- **Constraints**: limitations the solution must work within (budget, timeline, technology)
+**5. Assumptions and Constraints**
+Assumptions are things believed to be true but not confirmed — if they turn out to be false, the project is impacted. Constraints are non-negotiable boundaries (regulatory, budget, technology, timeline). Both must be documented and reviewed with sponsors.
 
-### 4. Stakeholder Analysis
-- Who are the stakeholders?
-- What is their interest and influence?
-- What do they need from this project?
-- (See stakeholder-analysis-frameworks.md)
+**6. Stakeholders**
+Who has a stake in the outcome. Include role, interest, level of influence, and required communication frequency. Use the RACI framework for decisions.
 
-### 5. Business Requirements
-Numbered, unambiguous requirement statements:
+**7. Success Criteria**
+How the project will be declared successful at go-live and 90 days post-launch. Must be measurable.
 
-```
-BR-001: The system shall allow authorised finance users to export transaction data
-        in CSV format for any date range within the last 24 months.
-BR-002: ...
-```
+**8. Risks and Dependencies**
+Business risks (not technical risks). Dependencies on other projects, teams, or third parties that could affect delivery.
 
-Each requirement should be:
-- Atomic (one requirement per statement)
-- Measurable or verifiable
-- Free of solution assumptions
+## Traceability
 
-### 6. Functional Overview (High Level)
-- Key use cases or process flows (narrative, not detailed specs)
-- Integration touchpoints with other systems
+Every business requirement should trace to: at least one functional requirement (in the FRD), at least one test case (in the test plan), and a specific deliverable in the project plan. Traceability matrices catch gaps in test coverage and ensure every requirement is eventually delivered.
 
-### 7. Non-Functional Requirements
-- Performance (response time, throughput)
-- Security (authentication, authorisation, data protection)
-- Compliance (regulatory standards that apply)
-- Availability and disaster recovery
+Use a simple table: BRD Requirement ID → FRD Requirement ID → Test Case ID → Sprint/Release.
 
-### 8. Success Metrics
-How will the business measure whether the project achieved its objectives?
-- KPIs before and after
-- Acceptance thresholds
+## Common BRD Failures
 
-### 9. Risks and Issues
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
+**Requirements as solutions:** "The system must use a REST API" is not a business requirement — it is a technical constraint. Rewrite: "The system must integrate with [third-party system] to enable [business capability]."
 
-### 10. Sign-Off
-Stakeholder approval table with names, roles, and dates.
+**Ambiguous language:** "The system should be user-friendly" cannot be tested or traced. Replace with measurable criteria.
 
-## Writing Quality Requirements
+**Missing out-of-scope:** Without explicit exclusions, stakeholders assume everything adjacent to the stated scope is included. Be explicit.
 
-Good requirements are:
-- **Complete**: covers all conditions and scenarios needed
-- **Consistent**: no contradictions with other requirements
-- **Unambiguous**: only one interpretation possible
-- **Verifiable**: can be tested
-- **Traceable**: linked to a business objective
+**No stakeholder sign-off:** A BRD without formal approval by the sponsor is not a contract — it is a suggestion. Get sign-off before requirements are handed to the solution team.
 
-Avoid: "user-friendly", "fast", "flexible", "appropriate" — replace with measurable alternatives.
+**Living document without versioning:** BRDs change. Each version must be dated, versioned, and compared against the previous version. Change log at the front of the document.
+
+## BRD vs FRD vs User Stories
+
+| Document | Level | Author | Answers |
+|----------|-------|--------|---------|
+| BRD | Business | BA / Sponsor | Why? What business problem? |
+| FRD | Functional | BA | What must the system do? |
+| User Story | Feature | PO | What does the user need? |
+
+In agile contexts, a lightweight BRD (often called a Project Charter or Initiative Brief) replaces the full BRD. It captures the same essential elements in 2–3 pages rather than 20–30.

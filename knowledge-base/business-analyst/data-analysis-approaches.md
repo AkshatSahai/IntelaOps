@@ -1,78 +1,92 @@
 # Data Analysis Approaches for Business Analysts
 
-## The BA's Relationship with Data
+## The BA's Role in Data Analysis
 
-Business analysts use data to validate assumptions, understand current-state performance, build the case for change, and define success metrics. You don't need to be a data scientist — but you must be comfortable reading, questioning, and communicating data.
+Business analysts use data analysis to frame problems, validate assumptions, and support recommendations. Unlike data scientists who build models, BAs need to know how to interpret data, structure analyses that answer decision-relevant questions, and present findings to non-technical stakeholders.
 
-## Descriptive Analysis — Understanding Current State
+The BA's primary data skill is not statistical sophistication — it is asking the right question before touching a spreadsheet. Most failed analyses fail because they measure the wrong thing, not because the math is wrong.
 
-### Key Questions
-- What is happening in the process today?
-- What does the data tell us about volume, frequency, and error rates?
-- Where are the outliers?
+## Framing Analyses for Decisions
 
-### Techniques
-- **Frequency analysis**: How often does each outcome occur?
-- **Trend analysis**: How has performance changed over time?
-- **Distribution analysis**: What is the range and spread of values?
-- **Pareto analysis (80/20)**: Which 20% of causes account for 80% of the problem?
+Every analysis should start with a decision: "What decision will this analysis inform?" If no decision is pending, there is no reason to do the analysis.
 
-### Common Sources
-Process logs, transaction databases, support ticket systems, CRM data, operational dashboards.
+**Analysis framing template:**
+1. **Decision:** What is the specific decision to be made?
+2. **Decision-maker:** Who will make the decision, and when?
+3. **Key question:** What data question, when answered, will inform that decision?
+4. **Hypothesis:** What do we expect to find, and why?
+5. **Data needed:** What data sources and variables are required?
+6. **Success criteria:** What finding would lead to Decision A vs. Decision B?
 
-## Root Cause Analysis — Understanding Why
+Frame the analysis before collecting data. Analysts who collect data first and frame questions second end up with confirmation bias baked in.
 
-### 5 Whys Technique
-Start with the symptom and ask "why" five times (or until you reach a root cause, not a person).
+## Descriptive Analysis (What Happened?)
 
-Example:
-1. Why are customers calling support? → Their order status isn't visible online
-2. Why isn't order status visible? → The order management system doesn't expose a status API
-3. Why doesn't it expose a status API? → It was built in 2009 before APIs were standard
-4. Why wasn't it updated? → No business case was made for the investment
-5. **Root cause**: No one owned the end-to-end customer order experience across systems
+Descriptive analysis summarizes historical data to understand current state. It answers: What happened? How much? How often? What does the distribution look like?
 
-### Fishbone (Ishikawa) Diagram
-Categorise potential causes under: People, Process, Technology, Environment, Materials, Measurement. Useful for brainstorming root causes in workshops.
+**Common techniques:**
+- Summary statistics (mean, median, mode, percentiles) — use median for skewed distributions
+- Trend analysis (time series, moving averages)
+- Cohort analysis (grouping users/customers by a shared characteristic, e.g., signup month)
+- Funnel analysis (drop-off rates at each step of a process)
 
-## Gap Analysis — From Current to Future State
+**BA application:** Baseline measurement before a change initiative. Establishing "as-is" metrics for feasibility and ROI calculations.
 
-Structure:
+## Diagnostic Analysis (Why Did It Happen?)
 
-| Dimension | Current State | Future State | Gap | Requirement |
-|-----------|---------------|--------------|-----|-------------|
-| Process | Manual data entry | Automated import | No API integration | Build import API |
-| Data | Siloed by department | Unified data model | No common key | Implement customer ID |
+Diagnostic analysis investigates the causes behind a pattern. It answers: Why is this metric moving? What is driving the change?
 
-Gaps become requirements. Requirements become the project scope.
+**Common techniques:**
+- Segmentation (break a top-line metric into component groups to find where the change is concentrated)
+- Correlation analysis (identify variables that move together — correlation is not causation)
+- Root cause analysis (5 Whys, fishbone diagram applied to data)
+- Pareto analysis (identify the 20% of causes driving 80% of the effect)
 
-## Defining and Measuring Success
+**BA application:** Root cause identification for process improvement. Supporting a business case by understanding why a current metric is underperforming.
 
-### Before you write requirements, define success metrics:
-- What KPI will improve?
-- By how much?
-- In what timeframe?
-- How will we measure it?
+## Avoiding Vanity Metrics
 
-### SMART Metrics Framework
-- **Specific**: "Reduce order processing time" → "Reduce average order processing time from 4 hours to 1 hour"
-- **Measurable**: How will you measure it?
-- **Achievable**: Is it realistic given constraints?
-- **Relevant**: Does it connect to a business objective?
-- **Time-bound**: By when?
+Vanity metrics look impressive but don't inform decisions. They obscure problems rather than surface them.
 
-## Presenting Data to Stakeholders
+**Vanity metric examples:**
+- Total registered users (vs. active users)
+- Page views (vs. conversion rate)
+- Features shipped (vs. customer outcomes improved)
+- Emails sent (vs. emails acted upon)
 
-- Lead with the insight, not the data: "Customers wait 4x longer than they expect" not "The average wait time is 47 minutes"
-- Use visuals: a bar chart beats a table; a trend line beats both
-- Anticipate "so what?" — every data point should connect to a decision or recommendation
-- Acknowledge uncertainty: distinguish between what the data shows and what it implies
+**Actionable metric characteristics:**
+1. **Comparative:** Has a benchmark (prior period, target, industry standard)
+2. **Rate or ratio:** Percentage or rate, not raw count — adjusts for volume changes
+3. **Decision-relevant:** A change in this metric would cause a specific action
+4. **Leading indicator:** Predicts future outcomes, not just records past ones
 
-## Data Quality Red Flags
+When reviewing a proposed dashboard or report, ask for each metric: "If this number goes up, what would we do differently?" If the answer is "nothing," it is a vanity metric.
 
-Watch for:
-- Missing values in unexpected places
-- Outliers that seem implausible (is it a data entry error?)
-- Inconsistent categorisation (same thing called different names in different records)
-- Data that contradicts anecdotal evidence from users (investigate — someone is right)
-- Metrics that seem too good — process performance data is often measured at the point of least friction
+## Categorization Taxonomies
+
+When analyzing qualitative data (customer feedback, support tickets, requirements, interview notes), a categorization taxonomy turns unstructured text into structured counts.
+
+**Building a taxonomy:**
+1. Sample 20–30 items from the dataset
+2. Note recurring themes — these become your top-level categories
+3. Break each category into 2–4 sub-categories
+4. Apply the taxonomy to the full dataset
+5. Add an "Other" category with a threshold — if "Other" exceeds 10% of items, the taxonomy has gaps
+
+**Taxonomy design principles:**
+- Mutually exclusive: each item belongs to exactly one category
+- Collectively exhaustive: every item can be categorized (with the "Other" escape)
+- Consistent naming: avoid overlapping terms between categories
+
+**BA application:** Categorizing support ticket themes to prioritize features. Classifying requirements by business domain. Analyzing stakeholder feedback themes.
+
+## Presenting Data Findings
+
+Data analysis is only valuable if the audience understands and acts on it. Structure findings presentations as:
+
+1. **Bottom line up front (BLUF):** State the conclusion in one sentence before showing any data
+2. **Supporting evidence:** Show the 2–3 data points that most directly support the conclusion
+3. **Caveats:** State the limitations of the analysis explicitly — what data was unavailable, what assumptions were made
+4. **Recommended action:** Tie findings back to the original decision. What should the decision-maker do based on this?
+
+Avoid data dumps. A slide with 15 charts is not an analysis — it is raw data. The BA's job is to synthesize, not present.

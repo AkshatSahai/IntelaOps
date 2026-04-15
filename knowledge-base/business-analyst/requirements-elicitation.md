@@ -1,75 +1,91 @@
 # Requirements Elicitation
 
-## What Is Elicitation?
+## What Elicitation Is
 
-Elicitation is the practice of discovering, uncovering, and identifying the needs of stakeholders. It is not simply "asking what they want" — stakeholders often don't know what they want, can't articulate it accurately, or confuse wants with needs.
+Requirements elicitation is the process of discovering, surfacing, and documenting what stakeholders need from a solution — not just what they say they want. The distinction matters: stakeholders often describe solutions rather than needs, confuse current-state problems with future-state requirements, and omit requirements so obvious to them they don't think to mention them.
 
-Effective elicitation uncovers explicit requirements (what they ask for), implicit requirements (what they assume is obvious), and latent requirements (what they don't yet know they need).
+Effective elicitation is 80% listening and facilitation, 20% writing. The BA's job is to ask the right questions, recognize when an answer is a symptom rather than a root cause, and probe until the underlying need is clear.
 
-## Elicitation Techniques
+## Stakeholder Interviews
 
-### 1. Interviews
+**Best for:** Deep understanding of individual perspectives, sensitive topics, senior stakeholders who won't speak freely in groups.
 
-**Best for:** Individual stakeholder perspectives, sensitive topics, executive input.
+**Preparation:**
+- Review any existing documentation before the interview
+- Prepare open-ended questions (avoid yes/no)
+- Prepare context-setting questions to warm up, then funnel toward specifics
 
-**Tips:**
-- Prepare open-ended questions in advance but be ready to deviate
-- Use the "five whys" to get below surface-level answers
-- Record (with consent) or take thorough notes
-- Send a follow-up summary to confirm understanding
+**Effective question types:**
+- *Current-state:* "Walk me through how you handle [process] today."
+- *Pain point:* "What's the most frustrating part of that process?"
+- *Ideal-state:* "If the problem were completely solved, what would that look like?"
+- *Priority:* "If you could only fix one thing, what would it be?"
+- *Edge case:* "What happens when [exception] occurs?"
 
-**Key questions:**
-- "What does success look like for you?"
-- "What are your biggest frustrations with the current process?"
-- "What would you do if this solution didn't exist?"
-- "What haven't I asked that I should have?"
+**Pitfall:** Stakeholders answer the question they wish you asked. When an answer doesn't match the question, note both — the mismatch is often the most important signal.
 
-### 2. Workshops / Facilitated Sessions
+## Facilitated Workshops
 
-**Best for:** Achieving consensus, resolving conflicting requirements, complex cross-functional processes.
+**Best for:** Reaching consensus across multiple stakeholders, resolving conflicting requirements, defining scope boundaries, process mapping.
 
-**Structure:**
-1. Open: set context and objectives
-2. Diverge: brainstorm individually or in pairs
-3. Converge: group and prioritise ideas together
-4. Close: summarise agreements and next steps
+**Workshop types:**
+- *Requirements workshop:* Structured group elicitation of business needs
+- *JAD session (Joint Application Design):* Collaborative design between business and IT
+- *Retrospective/root cause:* Post-incident requirements discovery
 
-**Facilitation tools:** affinity mapping, dot voting, process flow exercises, scenario walkthroughs
+**Facilitation tips:**
+- Assign a scribe separate from the facilitator
+- Use a parking lot for important off-topic items
+- Use dot voting or MoSCoW to reach consensus on priorities
+- End every workshop with confirmed next steps and owners
 
-### 3. Observation (Job Shadowing / Contextual Inquiry)
+**Pitfall:** Vocal stakeholders dominate workshops. Use techniques like silent brainstorming (write before share), round-robin contribution, and anonymous voting to surface quieter perspectives.
 
-**Best for:** Discovering workarounds, undocumented processes, and what people actually do vs what they say they do.
+## Observation (Shadowing / Job Shadowing)
 
-Observe users performing their actual work without intervening. Note tools they use, frustrations they express, and steps that seem inefficient. This often surfaces requirements that no interview would reveal.
+**Best for:** Processes where people can't accurately describe what they do, discovering undocumented workarounds, process compliance gaps.
 
-### 4. Document Analysis
+Observe the current-state process in action. Note what actually happens vs. what documentation says should happen. Users often have informal workarounds that represent hidden requirements ("I always export to Excel because the system doesn't let me filter by date").
 
-**Best for:** Understanding existing systems, regulatory requirements, and current-state processes.
+**Output:** Annotated process notes, list of workarounds, gaps between documented and actual process.
 
-Review: existing system documentation, policy documents, spreadsheets users maintain, regulatory guidelines, complaints logs, and support tickets.
+## Document Analysis
 
-### 5. Surveys / Questionnaires
+**Best for:** Regulatory requirements, existing system integration, replacing legacy systems, compliance contexts.
 
-**Best for:** Quantifying opinions across large groups, validating hypotheses.
+Review existing documentation: current SOPs, system manuals, compliance frameworks, previous BRDs, audit findings. Document analysis surfaces constraints and obligations that no individual stakeholder will think to mention.
 
-Use for: frequency of pain points, feature preference ranking, satisfaction scoring. Pair with qualitative interviews to understand the why behind the numbers.
+**Pitfall:** Documents go stale. Always verify documented processes against actual practice.
 
-### 6. Prototyping
+## Prototyping
 
-**Best for:** Eliciting requirements through reaction rather than description.
+**Best for:** UI-intensive systems, early discovery, stakeholders who struggle to articulate requirements in the abstract.
 
-Show a sketch, wireframe, or mockup. Users can respond to something concrete far more effectively than to abstract questions. Low-fidelity first — don't invest in hi-fi until the concept is validated.
+Low-fidelity wireframes (paper or tools like Figma) allow stakeholders to react to something concrete. Prototypes surface requirements that no interview or document would reveal: "Oh, but I also need to see the history of changes here." "What happens if I don't fill this field in?"
 
-## Elicitation Anti-Patterns
+Prototyping is an elicitation tool, not a design deliverable. Make this explicit — a prototype is not a commitment to the UI.
 
-- **Leading questions**: "Wouldn't you agree this would be better?" → biases responses
-- **Gold-plating in elicitation**: asking "what would make it perfect?" leads to wish lists, not real needs
-- **Ignoring resistance**: a stakeholder who's hard to schedule or gives vague answers may have important perspectives
-- **Single-source requirements**: always triangulate across multiple stakeholders
-- **Feature focus**: eliciting features ("I want a button that…") instead of outcomes ("I need to be able to…")
+## Survey and Questionnaire
 
-## The BA's Mindset During Elicitation
+**Best for:** Large stakeholder populations, quantitative data gathering, validating assumptions from other techniques.
 
-Be genuinely curious, not just box-checking. Every answer is the beginning of a deeper question. Silence is powerful — wait after a stakeholder finishes speaking; they often add the most important point after a pause.
+Use surveys to gather breadth when interviews can only provide depth. Surveys confirm whether a finding from five interviews is representative of the broader population.
 
-Document faithfully — record what was said, not your interpretation of it. Interpretation happens in analysis, not elicitation.
+**Pitfall:** Survey questions require careful design to avoid leading responses. Pilot with 2–3 stakeholders before distributing widely.
+
+## Choosing the Right Technique
+
+| Situation | Recommended Technique |
+|-----------|----------------------|
+| Understanding a complex existing process | Observation + Interviews |
+| Resolving conflicting stakeholder views | Facilitated Workshop |
+| Large, distributed stakeholder group | Survey |
+| Unclear UI requirements | Prototyping |
+| Regulatory / compliance context | Document Analysis |
+| Senior executive engagement | Interview |
+
+In practice, combine techniques: start with document analysis, conduct 3–5 interviews, run a workshop to validate and resolve gaps, then prototype the most ambiguous areas.
+
+## Validating Requirements
+
+After elicitation, validate requirements with stakeholders through structured walkthroughs. Ask: "Does this accurately represent what you need?" "Have we missed anything?" "Are there scenarios not covered here?" Validation is not sign-off — it is a confirmation of shared understanding before formalization.

@@ -1,91 +1,85 @@
 # Common Anti-Patterns in Product and BA Work
 
-## What Is an Anti-Pattern?
+## What Anti-Patterns Are
 
-An anti-pattern is a commonly occurring solution to a recurring problem that seems reasonable but produces bad results. Recognising them is the first step to avoiding them.
+Anti-patterns are common responses to recurring problems that feel reasonable in the moment but consistently produce bad outcomes. Unlike simply "doing it wrong," an anti-pattern has a recognizable structure — which is what makes it seductive and what makes naming it useful. When you can name an anti-pattern, you can recognize it earlier and intervene.
 
----
+## Scope Creep
 
-## Requirements Anti-Patterns
+**Pattern:** The scope of a project or sprint expands incrementally, with each addition seeming small and reasonable, until the original commitment is undeliverable.
 
-### 1. Gold-Plating
-**What it looks like**: Adding features, polish, or complexity beyond what was requested or needed.
-**Why it happens**: Developers want to do good work; stakeholders keep adding scope; no one enforces boundaries.
-**Consequence**: Wasted effort, delayed delivery, maintenance burden.
-**Fix**: Tie every feature to a defined user need. If you can't articulate the user who benefits, challenge whether it's needed.
+**How it happens:** A stakeholder adds "just one more thing" during demo feedback. A developer notices a related problem while building and fixes it without discussion. The product owner says yes to a new request without removing something else.
 
-### 2. Analysis Paralysis
-**What it looks like**: The team keeps analysing, refining, and asking questions instead of starting to build.
-**Why it happens**: Fear of being wrong, unclear decision authority, perfectionism.
-**Consequence**: Nothing gets delivered; opportunity is missed.
-**Fix**: Use timeboxed discovery. Decide on enough requirements to start, and plan to learn the rest by doing.
+**Signs:** Sprint velocity consistently below commitment. "Almost done" becomes the permanent status. The original sprint goal is forgotten.
 
-### 3. Requirements as a Contract
-**What it looks like**: Requirements documents treated as fixed, immutable, legally binding specs.
-**Why it happens**: Waterfall heritage; blame culture; procurement practices.
-**Consequence**: Change requests become expensive and political; teams build what was specified, not what's needed.
-**Fix**: Use requirements as conversation starters. Build in explicit change review cycles.
+**Prevention:**
+- Maintain a written scope boundary with an explicit out-of-scope section
+- Every addition to sprint scope requires a removal of equivalent size
+- Use the sprint goal as the filter: "Does this addition serve the sprint goal?" If not, it goes to the backlog.
 
-### 4. Requirements by Assumption
-**What it looks like**: Writing requirements without talking to users or stakeholders — assuming you know what they need.
-**Why it happens**: Time pressure, inaccessible users, overconfidence.
-**Consequence**: Building the wrong thing; expensive rework.
-**Fix**: Always validate with at least 3 representative users before committing to a solution.
+## Gold Plating
 
----
+**Pattern:** A developer or designer adds features or polish beyond the agreed acceptance criteria because they believe the result will be better. The additions are not requested and not approved.
 
-## Product Ownership Anti-Patterns
+**How it differs from scope creep:** Scope creep is driven by stakeholder additions. Gold plating is driven by the team's own initiative.
 
-### 5. The Absentee Product Owner
-**What it looks like**: PO is never available for questions, never attends refinement, shows up only at sprint review to say "that's not what I wanted."
-**Why it happens**: PO role not properly resourced; PO doing other jobs simultaneously.
-**Consequence**: Teams make assumptions that are frequently wrong; low confidence and morale.
-**Fix**: Product ownership is a full-time role. If it isn't, the product will suffer proportionally.
+**Why it's a problem:** Gold plating consumes capacity without delivering prioritized value. It introduces unreviewed functionality. It delays the delivery of other prioritized items.
 
-### 6. The Feature Factory
-**What it looks like**: Output measured by number of features shipped, not outcomes achieved. Backlog is an infinite feature queue.
-**Why it happens**: Stakeholder pressure; lack of outcome-based metrics; roadmaps committed too far in advance.
-**Consequence**: Teams build a lot but deliver little value; technical debt accumulates.
-**Fix**: Define success in outcome terms (retention, task completion, revenue) before writing stories. Regularly sunset features that aren't delivering.
+**Prevention:** Acceptance criteria define done. Once criteria are met, the story is complete — any further work requires a new story and explicit prioritization.
 
-### 7. Stakeholder-Driven Backlog
-**What it looks like**: Loudest/most senior stakeholder drives backlog order, regardless of user value or strategic alignment.
-**Why it happens**: Weak PO authority; no objective prioritisation framework; fear of conflict.
-**Consequence**: Team works on the wrong things; strategic initiatives get crowded out.
-**Fix**: Use an explicit, transparent prioritisation framework (WSJF, MoSCoW). Make trade-offs visible.
+## Bikeshedding (Parkinson's Law of Triviality)
 
----
+**Pattern:** A group spends disproportionate time and energy on low-stakes, easy-to-understand decisions while avoiding complex, high-stakes decisions.
 
-## Agile Process Anti-Patterns
+**Why it happens:** Simple decisions invite everyone's opinion (everyone has a view on button color). Complex decisions require expertise and carry risk — people unconsciously avoid them.
 
-### 8. Zombie Scrum
-**What it looks like**: The team goes through Scrum ceremonies mechanically with no energy, no improvement, no real collaboration.
-**Why it happens**: Scrum imposed top-down; no psychological safety; no real retrospective action.
-**Consequence**: Scrum overhead without benefit; team disengagement.
-**Fix**: Retrospectives must produce real actions that are followed up on. If they don't, the team has lost faith in the process.
+**Examples in product work:** 45-minute debates on UI label wording. Lengthy email threads about which icon to use. Repeated re-opening of already-decided low-stakes choices.
 
-### 9. Sprint Planning Theatre
-**What it looks like**: Stories are estimated in planning, but the real work is unknown until mid-sprint. Estimates are fiction.
-**Why it happens**: Stories not refined before planning; team doesn't feel safe saying "we don't understand this."
-**Consequence**: Sprint goals are regularly missed; planning loses credibility.
-**Fix**: Nothing should enter sprint planning that isn't INVEST-compliant and has acceptance criteria.
+**Prevention:**
+- Time-box discussions on minor decisions explicitly: "We have 5 minutes for this."
+- Assign ownership: "This is [person]'s call — let them decide."
+- Defer low-stakes decisions: "Ship with option A and revisit after we have user data."
 
-### 10. Velocity Obsession
-**What it looks like**: Leadership tracks velocity as the primary measure of team performance. Teams game it.
-**Why it happens**: Desire for predictability; misunderstanding of velocity's purpose.
-**Consequence**: Story point inflation; pressure to avoid difficult work; metrics divorced from outcomes.
-**Fix**: Velocity is a planning tool for the team, not a management metric. Measure outcomes (features delivered, bugs fixed, user satisfaction) instead.
+## HiPPO (Highest Paid Person's Opinion)
 
----
+**Pattern:** Product decisions are made based on the seniority of the person advocating for them rather than evidence, user research, or structured analysis.
 
-## Communication Anti-Patterns
+**Why it's damaging:** It overrides good decisions with bad ones. It disincentivizes the team from gathering evidence (why bother if the executive will override anyway?). It creates a culture of approval-seeking rather than decision-making.
 
-### 11. The HIPPO Effect
-**What it looks like**: Decisions made based on the Highest Paid Person's Opinion, regardless of evidence.
-**Consequence**: Teams stop gathering data; culture of deference over insight.
-**Fix**: Establish data-driven decision practices. Present evidence before preferences.
+**Prevention:**
+- Agree on decision criteria before a decision meeting, not during
+- Present evidence-based recommendations with explicit assumptions
+- Frame disagreements as competing hypotheses: "I think X because of evidence Y. What evidence would change your view?"
+- Run experiments to resolve disagreements rather than arguing from authority
 
-### 12. Meeting Instead of Document
-**What it looks like**: Complex decisions made verbally in meetings, with no written record. Attendees remember different things.
-**Consequence**: Rework, disputes, inconsistency.
-**Fix**: All decisions of consequence must be documented and shared within 24 hours of the meeting.
+## Analysis Paralysis
+
+**Pattern:** A team or individual defers making a decision indefinitely because the available information seems insufficient, waiting for more data or more certainty that never arrives.
+
+**Why it happens:** Making a decision means being accountable for the outcome. More analysis feels like risk reduction but actually just delays commitment.
+
+**Signs:** Decisions in "in review" for multiple sprints. Requests for more data that address questions already answered. Repeated re-opening of options that were previously narrowed down.
+
+**Prevention:**
+- Set explicit decision deadlines: "We will decide by [date] with the information available."
+- Define the minimum information needed to make a good-enough decision (not a perfect one)
+- Use time-boxed spikes for research: 2 days maximum before a decision is made on available evidence
+- Apply the reversibility test: "Is this decision reversible?" If yes, decide quickly and adjust later.
+
+## Premature Requirements Specification
+
+**Pattern:** The BA or product owner invests heavily in detailing requirements for work that is far from being built — only to find that requirements change by the time development begins.
+
+**Why it's tempting:** Detailed requirements feel like preparation. Stakeholders feel reassured by thick documentation.
+
+**Why it's wasteful:** Requirements for work three quarters away will change. The work of writing them is wasted, and so is the work of updating them.
+
+**Prevention:** Apply "just in time" requirements — detail work two sprints ahead of implementation, not ten. Use placeholders (epics, one-line problem statements) for far-future work.
+
+## Proxy Ownership
+
+**Pattern:** A person holds the product owner title but routes all decisions through a more senior stakeholder rather than making decisions directly.
+
+**Impact:** Decision cycles lengthen from hours to days. The team cannot get timely answers. The PO loses credibility as a decision-maker.
+
+**Prevention:** Product ownership requires delegated authority. Before accepting a PO role, confirm explicitly what decisions can be made independently and what requires escalation. If most decisions require escalation, the role needs to be restructured.

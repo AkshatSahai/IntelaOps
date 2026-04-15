@@ -2,74 +2,81 @@
 
 ## Why Communication Frameworks Matter
 
-Product owners and business analysts succeed or fail on communication. Technical accuracy is necessary but insufficient. The ability to frame, structure, and adapt communication to different audiences is what makes the difference between a requirement that gets built correctly and one that gets misunderstood.
+Product owners and business analysts spend the majority of their time communicating: presenting recommendations, framing trade-offs, delivering bad news, and building alignment across stakeholders with different priorities. Ad hoc communication often buries the key message, over-indexes on detail, and fails to drive decisions.
 
-## Pyramid Principle (Minto)
+Structured communication frameworks ensure the message lands — and that the right decision gets made.
 
-Structure communication with the conclusion first, then supporting arguments.
+## BLUF: Bottom Line Up Front
 
-**SCQA Framework:**
-- **Situation**: What is the context everyone agrees on?
-- **Complication**: What has changed or what problem has emerged?
-- **Question**: What does this make the audience wonder?
-- **Answer**: Your recommendation or finding (lead with this in written communication)
+BLUF is the single most useful communication habit for product and BA roles. State the conclusion before the supporting evidence.
 
-Use this structure for: status reports, recommendations to leadership, BRD executive summaries, feature proposals.
+**Without BLUF:** "We analyzed the three authentication options. Option A uses OAuth 2.0 and took the team two weeks to evaluate. Option B requires a vendor relationship. Option C has limited documentation. Based on all of this, we recommend Option A."
 
-**Anti-pattern**: Burying the recommendation at the end after extensive preamble. Executives read the first paragraph; if your conclusion isn't there, it won't land.
+**With BLUF:** "We recommend OAuth 2.0 (Option A). It is the only option compatible with our existing identity provider, has the strongest community support, and fits within the current sprint budget. Here is the supporting analysis."
 
-## Stakeholder Communication Matrix
+BLUF respects the reader's time, makes the ask clear from the start, and allows readers who need only the summary to stop reading. Use BLUF in emails, Slack messages, presentations, and documents.
 
-Tailor your message to the audience:
+## The Recommendation Brief
 
-| Audience | Language | Level of Detail | Format | Frequency |
-|----------|----------|----------------|--------|-----------|
-| Executive/Sponsor | Business outcomes, ROI, risk | High-level | 1-page brief, dashboard | Monthly/milestone |
-| Business stakeholder | Process, value, timelines | Medium | Status update, demo | Fortnightly |
-| Developer/QA | Functional detail, acceptance criteria | High | Story, spec, diagram | Sprint-by-sprint |
-| End user | What changes for them, how to use it | Low-technical | Training guide, demo | At delivery |
+Use a structured recommendation brief for decisions that require stakeholder approval:
 
-## RACI for Communication
+1. **Situation:** What is the context? (2 sentences)
+2. **Complication:** What has changed, gone wrong, or become unclear? (2 sentences)
+3. **Question:** What decision needs to be made?
+4. **Recommendation:** What do you recommend, and why?
+5. **Options considered:** What alternatives were evaluated and why were they rejected?
+6. **Risks:** What could go wrong with the recommendation, and how will it be mitigated?
+7. **Ask:** What specific action do you need from this audience, and by when?
 
-Define who receives what communication:
-- **Accountable**: Must be consulted before decisions; their sign-off is required
-- **Consulted**: Input requested; two-way dialogue
-- **Informed**: Updates sent; one-way; no response required
+This structure (adapted from the McKinsey "Situation-Complication-Question" framework) works for written briefs, verbal presentations, and Slack escalations. Keep each section to 2–4 sentences.
 
-Over-communicating (CCing everyone on everything) is as harmful as under-communicating — it trains people to ignore your messages.
+## Presenting Bad News
 
-## Managing Up — Communicating with Leadership
+Bad news delivered poorly creates more organizational damage than the underlying problem. Use the PIE framework:
 
-Key principles:
-1. **Lead with impact**: "We have a risk that could delay launch by 3 weeks" before the detail
-2. **Bring options**: Never just present a problem — present 2–3 options with trade-offs
-3. **Quantify when possible**: "This affects 2,000 users daily" beats "this affects a lot of users"
-4. **Be brief**: A 2-minute verbal update is better than a 20-slide deck for routine matters
-5. **Signal early**: Leaders hate surprises. Share bad news as soon as you know it.
+- **Problem:** State the problem clearly and factually, without softening or burying it. "The Q3 launch date is at risk."
+- **Impact:** Quantify the business impact. "This affects the contract with [Customer], which represents $X in revenue this quarter."
+- **Escape (options):** Present 2–3 options for resolving the situation with trade-offs for each. Do not present a problem without options.
 
-## Conflict Resolution Frameworks
+Rules for delivering bad news:
+- Deliver it early. Bad news that arrives late arrives twice — once when you knew and once when you told them.
+- Come with options, not just the problem.
+- Do not minimize. "A small delay" when you mean "six weeks" destroys trust.
+- Deliver it to the decision-maker first, not to the wider team.
 
-### Interest-Based Negotiation
-Focus on interests (why someone wants something), not positions (what they say they want). Two stakeholders who both say "we want ownership of this data" may actually both want the same thing — reliable access — and ownership is just their proposed solution.
+## Executive Communication
 
-**Steps:**
-1. Separate people from the problem
-2. Focus on interests, not positions
-3. Generate options for mutual gain
-4. Use objective criteria to evaluate options
+Executives operate at a different altitude than delivery teams. Adjust communication accordingly:
 
-### Escalation Path
-When stakeholder conflicts can't be resolved at the working level:
-1. Direct conversation between conflicting parties (facilitated by BA/PO)
-2. Escalate to shared manager with a summary of positions and proposed resolution
-3. Programme board / steering committee decision
-4. Document the decision and its rationale regardless of outcome
+**What executives care about:** Business outcomes, risks to business objectives, decisions that require their authority, and surprises (which they hate).
+**What executives do not need:** Sprint velocity, technical architecture choices, detailed test plans, individual story statuses.
 
-## Writing for Clarity
+**Executive communication rules:**
+- Lead with the business outcome or decision, not the process
+- Use numbers — revenue impact, time saved, risk reduction in dollars
+- One page or five minutes maximum for routine updates
+- Bring decisions with a clear recommendation, not open-ended questions
+- Never surface a problem without options — executives expect you to have thought through responses
 
-Techniques for unambiguous requirements writing:
-- **Active voice**: "The system sends a confirmation email" not "A confirmation email is sent by the system"
-- **Specific verbs**: "displays", "calculates", "stores" not "handles", "manages", "processes"
-- **Avoid double negatives**: "must not fail to notify" → "must notify"
-- **Define jargon**: Every domain has its own vocabulary. Define terms in a glossary.
-- **One sentence, one requirement**: If a sentence contains "and" or "or", consider splitting it
+## Framing Trade-Offs
+
+Product decisions are almost always trade-off decisions. When presenting a trade-off, use a consistent structure:
+
+**"If we do X, we get [benefit] but we give up [cost]. If we do Y, we get [benefit] but we give up [cost]. Given [key constraint], I recommend X."**
+
+Framing trade-offs this way:
+- Shows stakeholders that you've considered both sides
+- Makes the constraint explicit (budget, timeline, risk tolerance)
+- Provides a clear recommendation while respecting the stakeholder's authority to decide
+
+Avoid presenting trade-offs as pure lists of pros and cons without a recommendation. A list without a recommendation forces the stakeholder to do the analysis you should have done.
+
+## Managing Stakeholder Expectations
+
+Expectation mismatches are the source of most stakeholder dissatisfaction. Manage them proactively:
+
+- **Set scope expectations early** using MoSCoW classification and a written out-of-scope section
+- **Confirm understanding in writing** after key conversations ("Following up from our discussion — my understanding is...")
+- **Provide regular status updates** before stakeholders ask for them
+- **Signal changes early** — the moment you know a date or scope is at risk, inform stakeholders with options, not just the problem
+- **Close the loop** — when stakeholders raise concerns, confirm what you did with that input

@@ -1,19 +1,30 @@
-import { AppSidebar } from "@/components/layout/app-sidebar";
-import { Header } from "@/components/layout/header";
+import { Suspense } from 'react';
+import { AppSidebar } from '@/components/layout/app-sidebar';
+import { Header } from '@/components/layout/header';
+import { AuthGuard } from '@/components/layout/auth-guard';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps): React.JSX.Element {
-  // TODO: fetch user session and pass role to Header
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      <AppSidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+    <AuthGuard>
+      <div className="flex h-screen overflow-hidden bg-background">
+        <AppSidebar />
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <Suspense
+            fallback={
+              <div className="flex h-14 shrink-0 items-center border-b bg-background px-6">
+                <div className="h-4 w-32 animate-pulse rounded bg-muted" />
+              </div>
+            }
+          >
+            <Header />
+          </Suspense>
+          <main className="flex-1 overflow-hidden">{children}</main>
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }

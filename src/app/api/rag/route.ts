@@ -40,11 +40,15 @@ export async function POST(
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
 
-  const context = await searchKnowledgeBase(
-    parsed.data.query,
-    parsed.data.role,
-    parsed.data.artifactTypeId as ArtifactTypeId | undefined
-  );
-
-  return NextResponse.json({ context });
+  try {
+    const context = await searchKnowledgeBase(
+      parsed.data.query,
+      parsed.data.role,
+      parsed.data.artifactTypeId as ArtifactTypeId | undefined
+    );
+    return NextResponse.json({ context });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

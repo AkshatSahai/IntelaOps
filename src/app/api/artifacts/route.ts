@@ -35,8 +35,13 @@ export async function GET(
     return NextResponse.json({ error: 'sessionId required' }, { status: 400 });
   }
 
-  const artifact = await getSessionArtifact(sessionId);
-  return NextResponse.json({ artifact });
+  try {
+    const artifact = await getSessionArtifact(sessionId);
+    return NextResponse.json({ artifact });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function POST(
@@ -58,14 +63,18 @@ export async function POST(
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
 
-  const artifact = await saveArtifact(
-    parsed.data.sessionId,
-    user.id,
-    parsed.data.role as RoleId,
-    parsed.data.artifactTypeId as ArtifactTypeId,
-    parsed.data.title,
-    parsed.data.content
-  );
-
-  return NextResponse.json({ artifact }, { status: 201 });
+  try {
+    const artifact = await saveArtifact(
+      parsed.data.sessionId,
+      user.id,
+      parsed.data.role as RoleId,
+      parsed.data.artifactTypeId as ArtifactTypeId,
+      parsed.data.title,
+      parsed.data.content
+    );
+    return NextResponse.json({ artifact }, { status: 201 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

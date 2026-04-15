@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createClient } from '@/lib/supabase/server';
 import { streamAgentResponse } from '@/services/agent';
-import { getSessionMessages } from '@/services/session-manager';
+import { addMessage, getSessionMessages } from '@/services/session-manager';
 import type { ChatRequest, ArtifactTypeId } from '@/lib/types';
 
 const ARTIFACT_TYPE_IDS = [
@@ -24,6 +25,13 @@ const chatRequestSchema = z.object({
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse | Response> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -47,15 +55,20 @@ export async function POST(request: NextRequest): Promise<NextResponse | Respons
     artifactTypeId: parsed.data.artifactTypeId as ArtifactTypeId | undefined,
   };
 
-  const conversationHistory = await getSessionMessages(chatRequest.sessionId);
+  try {
+    await addMessage(chatRequest.sessionId, 'user', chatRequest.message);
+    const conversationHistory = await getSessionMessages(chatRequest.sessionId);
+    const stream = await streamAgentResponse(chatRequest, conversationHistory);
 
-  const stream = await streamAgentResponse(chatRequest, conversationHistory);
-
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Transfer-Encoding': 'chunked',
-      'Cache-Control': 'no-cache',
-    },
-  });
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

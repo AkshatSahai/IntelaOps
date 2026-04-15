@@ -29,8 +29,13 @@ export async function GET(): Promise<NextResponse<{ sessions: Session[] } | { er
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const sessions = await getUserSessions(user.id);
-  return NextResponse.json({ sessions });
+  try {
+    const sessions = await getUserSessions(user.id);
+    return NextResponse.json({ sessions });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function POST(
@@ -55,12 +60,16 @@ export async function POST(
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
 
-  const session = await createSession(
-    user.id,
-    parsed.data.role,
-    parsed.data.mode,
-    parsed.data.artifactTypeId as ArtifactTypeId | undefined
-  );
-
-  return NextResponse.json({ session }, { status: 201 });
+  try {
+    const session = await createSession(
+      user.id,
+      parsed.data.role,
+      parsed.data.mode,
+      parsed.data.artifactTypeId as ArtifactTypeId | undefined
+    );
+    return NextResponse.json({ session }, { status: 201 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

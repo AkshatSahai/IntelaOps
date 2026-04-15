@@ -1,56 +1,24 @@
-import type { Message, Role } from "@/lib/types";
-import { anthropic, MODEL_ID } from "@/lib/anthropic";
-import { FRAMEWORK_DETECTION_PROMPT } from "@/prompts/advisory";
+// Framework detection via keyword matching (no LLM call).
 
-export async function detectRelevantFrameworks(
-  userMessage: string
-): Promise<string[]> {
-  const response = await anthropic.messages.create({
-    model: MODEL_ID,
-    max_tokens: 100,
-    messages: [
-      {
-        role: "user",
-        content: `${FRAMEWORK_DETECTION_PROMPT}\n\n${userMessage}`,
-      },
-    ],
-  });
-
-  const text =
-    response.content[0]?.type === "text" ? response.content[0].text : "";
-
-  return text
-    .split(",")
-    .map((f) => f.trim())
-    .filter(Boolean);
+interface FrameworkKeywords {
+  name: string;
+  keywords: string[];
 }
 
-export function buildAdvisoryContext(messages: Message[]): string {
-  return messages
-    .filter((m) => m.role !== "system")
-    .slice(-10) // last 10 messages for context window efficiency
-    .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
-    .join("\n\n");
-}
+const FRAMEWORK_MAP: FrameworkKeywords[] = [
+  { name: 'RICE', keywords: ['rice', 'reach', 'impact', 'confidence', 'effort', 'prioriti'] },
+  { name: 'WSJF', keywords: ['wsjf', 'weighted shortest job', 'cost of delay', 'job size'] },
+  { name: 'MoSCoW', keywords: ['moscow', 'must have', 'should have', 'could have', 'won\'t have', 'must-have', 'should-have'] },
+  { name: 'Kano', keywords: ['kano', 'delighter', 'basic need', 'performance need', 'excitement'] },
+  { name: 'SWOT', keywords: ['swot', 'strength', 'weakness', 'opportunit', 'threat'] },
+  { name: 'Root Cause Analysis', keywords: ['root cause', '5 why', 'five why', 'fishbone', 'ishikawa', 'cause and effect'] },
+  { name: 'Decision Matrix', keywords: ['decision matrix', 'weighted criteria', 'scoring matrix', 'pugh matrix', 'option analysis'] },
+  { name: 'Stakeholder Mapping', keywords: ['stakeholder map', 'influence interest', 'power interest', 'stakeholder matrix', 'influence grid'] },
+];
 
-export function shouldTransitionToGuided(userMessage: string): boolean {
-  const triggers = [
-    "write a",
-    "create a",
-    "generate a",
-    "draft a",
-    "make a",
-    "build a",
-    "user story",
-    "brd",
-    "requirements document",
-    "acceptance criteria",
-  ];
+export function detectRelevantFrameworks(userMessage: string): string[] {
   const lower = userMessage.toLowerCase();
-  return triggers.some((t) => lower.includes(t));
-}
-
-export function extractRoleContext(_messages: Message[], _role: Role): string {
-  // TODO: extract key facts from conversation for RAG query construction
-  return "";
+  return FRAMEWORK_MAP
+    .filter(({ keywords }) => keywords.some((kw) => lower.includes(kw)))
+    .map(({ name }) => name);
 }

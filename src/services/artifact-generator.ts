@@ -1,43 +1,77 @@
-import type { Artifact, ArtifactType, SaveArtifactRequest } from "@/lib/types";
+import type { Artifact, ArtifactTypeId, RoleId } from '@/lib/types';
+import { createClient } from '@/lib/supabase/server';
 
 export async function saveArtifact(
-  params: SaveArtifactRequest
+  sessionId: string,
+  userId: string,
+  role: RoleId,
+  artifactTypeId: ArtifactTypeId,
+  title: string,
+  content: string
 ): Promise<Artifact> {
-  // TODO: upsert into artifacts table (increment version on conflict)
-  void params;
-  throw new Error("Not implemented — connect Supabase first");
-}
+  const supabase = await createClient();
 
-export async function getArtifactBySession(
-  sessionId: string
-): Promise<Artifact | null> {
-  // TODO: fetch latest artifact for a session
-  void sessionId;
-  return null;
-}
+  // Fetch existing version to increment
+  const { data: existing } = await supabase
+    .from('artifacts')
+    .select('version')
+    .eq('session_id', sessionId)
+    .order('version', { ascending: false })
+    .limit(1)
+    .single();
 
-export async function getArtifactVersions(
-  sessionId: string
-): Promise<Artifact[]> {
-  // TODO: fetch all versions ordered by version desc
-  void sessionId;
-  return [];
-}
+  const nextVersion = existing ? (existing.version as number) + 1 : 1;
 
-export function detectArtifactReady(assistantMessage: string): boolean {
-  // Heuristic: if the message contains a large markdown block, artifact is ready
-  const headerCount = (assistantMessage.match(/^#{1,3}\s/gm) ?? []).length;
-  return headerCount >= 3;
-}
+  const { data, error } = await supabase
+    .from('artifacts')
+    .insert({
+      session_id: sessionId,
+      user_id: userId,
+      role,
+      artifact_type_id: artifactTypeId,
+      title,
+      content,
+      version: nextVersion,
+    })
+    .select()
+    .single();
 
-export function extractArtifactContent(
-  assistantMessage: string,
-  _artifactType: ArtifactType
-): string {
-  // Strip any prose before the first heading
-  const firstHeadingIndex = assistantMessage.search(/^#{1,3}\s/m);
-  if (firstHeadingIndex > 0) {
-    return assistantMessage.slice(firstHeadingIndex);
+  if (error || !data) {
+    throw new Error(`Failed to save artifact: ${error?.message ?? 'unknown'}`);
   }
-  return assistantMessage;
+
+  return mapArtifact(data);
+}
+
+export async function getSessionArtifact(sessionId: string): Promise<Artifact | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('artifacts')
+    .select()
+    .eq('session_id', sessionId)
+    .order('version', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error || !data) return null;
+
+  return mapArtifact(data);
+}
+
+// ------ Row mapper -------
+
+function mapArtifact(row: Record<string, unknown>): Artifact {
+  return {
+    id: row['id'] as string,
+    sessionId: row['session_id'] as string,
+    userId: row['user_id'] as string,
+    role: row['role'] as RoleId,
+    artifactTypeId: row['artifact_type_id'] as ArtifactTypeId,
+    title: row['title'] as string,
+    content: row['content'] as string,
+    version: row['version'] as number,
+    createdAt: row['created_at'] as string,
+    updatedAt: row['updated_at'] as string,
+  };
 }

@@ -11,7 +11,7 @@ export default function CreateSessionPage({ params }: CreateSessionPageProps): R
         sessionId={params.sessionId}
         mode="guided"
         role="product-owner"
-        artifactType="user-story"
+        artifactType="user-story-feature"
       />
     </div>
   );

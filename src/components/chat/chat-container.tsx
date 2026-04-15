@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { MessageBubble } from "@/components/chat/message-bubble";
 import { InputBar } from "@/components/chat/input-bar";
 import { ArtifactPreview } from "@/components/chat/artifact-preview";
-import type { ArtifactType, MessageRole, SessionMode, Role } from "@/lib/types";
+import type { ArtifactTypeId, MessageRole, SessionMode, RoleId } from "@/lib/types";
 
 interface ChatMessage {
   id: string;
@@ -15,8 +15,8 @@ interface ChatMessage {
 interface ChatContainerProps {
   sessionId: string;
   mode: SessionMode;
-  role: Role;
-  artifactType?: ArtifactType;
+  role: RoleId;
+  artifactType?: ArtifactTypeId;
   initialMessages?: ChatMessage[];
 }
 
@@ -61,7 +61,7 @@ export function ChatContainer({
           message: userMessage,
           role,
           mode,
-          artifactType,
+          artifactTypeId: artifactType,
         }),
       });
 

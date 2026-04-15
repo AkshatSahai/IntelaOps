@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
-import type { Role } from "@/lib/types";
+import type { RoleId } from "@/lib/types";
 
 interface RoleContextBadgeProps {
-  role: Role;
+  role: RoleId;
   className?: string;
 }
 
-const ROLE_LABELS: Record<Role, string> = {
+const ROLE_LABELS: Record<RoleId, string> = {
   "product-owner": "Product Owner",
   "business-analyst": "Business Analyst",
 };

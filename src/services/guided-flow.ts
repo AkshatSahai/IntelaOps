@@ -1,56 +1,42 @@
-import type { ArtifactType, ConversationPhase, Message } from "@/lib/types";
+import type { ArtifactTypeId, RoleId } from '@/lib/types';
+import { getArtifactType } from '@/lib/constants';
 
-// How many user messages are expected per phase before advancing
-const PHASE_MESSAGE_THRESHOLDS: Record<ConversationPhase, number> = {
-  intro: 1,
-  discovery: 3,
-  clarification: 2,
-  validation: 1,
-  generation: 0,
-  review: 99, // stays in review until user is done
+export type GuidedPhase = 'context' | 'analysis' | 'drafting' | 'review';
+
+// Number of user messages required before advancing to the next phase
+const PHASE_THRESHOLDS: Record<GuidedPhase, number> = {
+  context: 2,
+  analysis: 5,
+  drafting: 6,
+  review: 999, // stays in review
 };
 
-const PHASE_ORDER: ConversationPhase[] = [
-  "intro",
-  "discovery",
-  "clarification",
-  "validation",
-  "generation",
-  "review",
-];
+const PHASE_ORDER: GuidedPhase[] = ['context', 'analysis', 'drafting', 'review'];
 
-export function determineNextPhase(
-  currentPhase: ConversationPhase,
-  messages: Message[]
-): ConversationPhase {
-  const userMessages = messages.filter((m) => m.role === "user").length;
-  const threshold = PHASE_MESSAGE_THRESHOLDS[currentPhase];
-
-  if (userMessages >= threshold) {
-    const currentIndex = PHASE_ORDER.indexOf(currentPhase);
-    const nextIndex = Math.min(currentIndex + 1, PHASE_ORDER.length - 1);
-    return PHASE_ORDER[nextIndex] ?? currentPhase;
+export function determinePhase(
+  _artifactTypeId: ArtifactTypeId,
+  messageCount: number
+): GuidedPhase {
+  // Walk backwards through phases to find the highest one the message count has unlocked
+  for (let i = PHASE_ORDER.length - 1; i >= 0; i--) {
+    const phase = PHASE_ORDER[i];
+    if (phase === undefined) continue;
+    const threshold = PHASE_THRESHOLDS[phase];
+    if (messageCount >= threshold) {
+      return phase;
+    }
   }
-
-  return currentPhase;
+  const first = PHASE_ORDER[0];
+  return first ?? 'context';
 }
 
-export function isArtifactComplete(
-  phase: ConversationPhase,
-  _artifactType: ArtifactType
+export function validateArtifactCompleteness(
+  _roleId: RoleId,
+  artifactTypeId: ArtifactTypeId,
+  content: string
 ): boolean {
-  return phase === "review" || phase === "generation";
-}
-
-export function buildConversationContext(messages: Message[]): string {
-  return messages
-    .filter((m) => m.role !== "system")
-    .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
-    .join("\n\n");
-}
-
-export function getRequiredFields(_artifactType: ArtifactType): string[] {
-  // Returns the minimum fields needed before generation can proceed
-  // TODO: expand per artifact type
-  return ["user", "goal", "value"];
+  const artifactType = getArtifactType(artifactTypeId);
+  return artifactType.requiredSections.every((section) =>
+    content.toLowerCase().includes(section.toLowerCase())
+  );
 }

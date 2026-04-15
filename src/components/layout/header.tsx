@@ -1,8 +1,8 @@
 import { RoleContextBadge } from "@/components/roles/role-context-badge";
-import type { Role } from "@/lib/types";
+import type { RoleId } from "@/lib/types";
 
 interface HeaderProps {
-  role?: Role;
+  role?: RoleId;
   userEmail?: string;
 }
 

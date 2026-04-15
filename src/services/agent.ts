@@ -1,89 +1,77 @@
-import type { ChatRequest, ChatResponse, ConversationPhase } from "@/lib/types";
-import { anthropic, MODEL_ID, MAX_TOKENS } from "@/lib/anthropic";
-import { getSystemPrompt } from "@/prompts/system";
-import { getGuidedPrompt, buildGenerationPrompt } from "@/prompts/guided";
-import { buildAdvisoryPrompt } from "@/prompts/advisory";
-import { retrieveContext } from "@/services/rag";
-import { getMessages } from "@/services/session-manager";
-import { determineNextPhase, buildConversationContext } from "@/services/guided-flow";
-import { detectRelevantFrameworks, buildAdvisoryContext } from "@/services/advisory";
-
-// ------ Main streaming agent entry point -------
+import type { ChatRequest, Message } from '@/lib/types';
+import { anthropic, MODEL, MAX_TOKENS } from '@/lib/anthropic';
+import { getRoleSystemPrompt } from '@/prompts/system';
+import { getGuidedPhasePrompt } from '@/prompts/guided';
+import { getAdvisoryPrompt } from '@/prompts/advisory';
+import { searchKnowledgeBase } from '@/services/rag';
+import { determinePhase } from '@/services/guided-flow';
+import { detectRelevantFrameworks } from '@/services/advisory';
 
 export async function streamAgentResponse(
-  params: ChatRequest,
-  onChunk: (text: string) => void
-): Promise<ChatResponse> {
-  const { sessionId, message, role, mode, artifactType } = params;
+  request: ChatRequest,
+  conversationHistory: Message[]
+): Promise<ReadableStream<Uint8Array>> {
+  const { message, role, mode, artifactTypeId } = request;
 
-  // 1. Load conversation history
-  const messages = await getMessages(sessionId);
+  // 1. Retrieve RAG context
+  const ragContext = await searchKnowledgeBase(message, role, artifactTypeId);
 
-  // 2. Retrieve RAG context
-  const { context: ragContext } = await retrieveContext(message, role);
+  // 2. Build system prompt
+  const systemBase = getRoleSystemPrompt(role);
+  let modePrompt: string;
 
-  // 3. Build prompt based on mode
-  let systemPrompt: string;
-  let currentPhase: ConversationPhase = "intro";
-
-  if (mode === "guided" && artifactType) {
-    currentPhase = determineNextPhase(
-      (messages.at(-1)?.metadata?.phase as ConversationPhase) ?? "intro",
-      messages
-    );
-
-    const conversationContext = buildConversationContext(messages);
-
-    if (currentPhase === "generation") {
-      systemPrompt = buildGenerationPrompt(
-        artifactType,
-        role,
-        conversationContext,
-        ragContext
-      );
-    } else {
-      const phasePrompt = getGuidedPrompt(artifactType, currentPhase, role);
-      systemPrompt = `${getSystemPrompt(role)}\n\n${phasePrompt}\n\nKNOWLEDGE BASE:\n${ragContext}`;
-    }
+  if (mode === 'guided' && artifactTypeId) {
+    const userMessageCount = conversationHistory.filter((m) => m.role === 'user').length;
+    const phase = determinePhase(artifactTypeId, userMessageCount);
+    modePrompt = getGuidedPhasePrompt(artifactTypeId, phase, ragContext);
   } else {
-    // Advisory mode
-    const frameworks = await detectRelevantFrameworks(message);
-    systemPrompt = buildAdvisoryPrompt(role, ragContext, frameworks);
-    void buildAdvisoryContext(messages);
+    // Advisory mode — optionally surface detected frameworks
+    const frameworks = detectRelevantFrameworks(message);
+    const frameworkHint =
+      frameworks.length > 0
+        ? `\n\nFrameworks that may be relevant to this conversation: ${frameworks.join(', ')}.`
+        : '';
+    modePrompt = getAdvisoryPrompt(role, ragContext) + frameworkHint;
   }
 
-  // 4. Format message history for Anthropic
-  const anthropicMessages = messages
-    .filter((m) => m.role !== "system")
-    .map((m) => ({
-      role: m.role as "user" | "assistant",
+  const systemPrompt = `${systemBase}\n\n${modePrompt}`;
+
+  // 3. Format conversation history for Anthropic
+  const anthropicMessages = [
+    ...conversationHistory.map((m) => ({
+      role: m.role as 'user' | 'assistant',
       content: m.content,
-    }));
-  anthropicMessages.push({ role: "user", content: message });
+    })),
+    { role: 'user' as const, content: message },
+  ];
 
-  // 5. Stream response
-  let fullText = "";
-  const stream = await anthropic.messages.stream({
-    model: MODEL_ID,
-    max_tokens: MAX_TOKENS,
-    system: systemPrompt,
-    messages: anthropicMessages,
+  // 4. Return a ReadableStream that streams the Anthropic response
+  const encoder = new TextEncoder();
+
+  return new ReadableStream<Uint8Array>({
+    async start(controller) {
+      try {
+        const stream = anthropic.messages.stream({
+          model: MODEL,
+          max_tokens: MAX_TOKENS,
+          system: systemPrompt,
+          messages: anthropicMessages,
+        });
+
+        for await (const chunk of stream) {
+          if (
+            chunk.type === 'content_block_delta' &&
+            chunk.delta.type === 'text_delta'
+          ) {
+            controller.enqueue(encoder.encode(chunk.delta.text));
+          }
+        }
+        controller.close();
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Unknown error';
+        controller.enqueue(encoder.encode(`\n\n[Error: ${message}]`));
+        controller.close();
+      }
+    },
   });
-
-  for await (const chunk of stream) {
-    if (
-      chunk.type === "content_block_delta" &&
-      chunk.delta.type === "text_delta"
-    ) {
-      onChunk(chunk.delta.text);
-      fullText += chunk.delta.text;
-    }
-  }
-
-  return {
-    sessionId,
-    message: fullText,
-    phase: currentPhase,
-    artifactReady: currentPhase === "generation",
-  };
 }

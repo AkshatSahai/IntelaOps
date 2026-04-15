@@ -3,11 +3,11 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
-import type { ArtifactType } from "@/lib/types";
+import type { ArtifactTypeId } from "@/lib/types";
 
 interface ArtifactPreviewProps {
   content: string;
-  artifactType: ArtifactType;
+  artifactType: ArtifactTypeId;
 }
 
 export function ArtifactPreview({ content, artifactType }: ArtifactPreviewProps) {

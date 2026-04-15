@@ -1,62 +1,65 @@
 // ============================================================
-// Shared TypeScript interfaces for Operations Co-Pilot
-// All API routes and services import from here.
+// Complete type system for Operations Co-Pilot
+// All services, API routes, and components import from here.
 // ============================================================
 
-// ------ Domain enums -------
+// ------ Roles -------
 
-export type Role = "product-owner" | "business-analyst";
+export type RoleId = 'product-owner' | 'business-analyst';
 
-export type SessionMode = "guided" | "advisory";
-
-export type MessageRole = "user" | "assistant" | "system";
-
-export type ArtifactType =
-  // Product Owner artifacts
-  | "user-story"
-  | "user-story-bug"
-  | "epic"
-  | "sprint-goal"
-  | "acceptance-criteria"
-  | "backlog-refinement-notes"
-  // Business Analyst artifacts
-  | "business-requirements-document"
-  | "functional-specification"
-  | "use-case"
-  | "process-map"
-  | "gap-analysis"
-  | "stakeholder-analysis";
-
-export type ConversationPhase =
-  | "intro"
-  | "discovery"
-  | "clarification"
-  | "validation"
-  | "generation"
-  | "review";
-
-// ------ Database row shapes -------
-
-export interface UserProfile {
-  id: string;
-  email: string;
-  displayName: string;
-  defaultRole: Role | null;
-  createdAt: string;
-  updatedAt: string;
+export interface RoleDefinition {
+  id: RoleId;
+  name: string;
+  description: string;
+  icon: string;
+  artifactTypes: ArtifactTypeId[];
+  advisoryCapabilities: string[];
 }
+
+// ------ Artifact Types -------
+
+export type ArtifactTypeId =
+  | 'user-story-bug'
+  | 'user-story-feature'
+  | 'user-story-enhancement'
+  | 'sprint-goal'
+  | 'brd'
+  | 'process-map'
+  | 'feasibility-assessment'
+  | 'stakeholder-analysis';
+
+export interface ArtifactType {
+  id: ArtifactTypeId;
+  name: string;
+  description: string;
+  requiredSections: string[];
+}
+
+// ------ Sessions -------
+
+export type SessionMode = 'guided' | 'advisory';
+export type SessionStatus = 'active' | 'completed' | 'archived';
 
 export interface Session {
   id: string;
   userId: string;
+  role: RoleId;
   mode: SessionMode;
-  role: Role;
+  artifactTypeId: ArtifactTypeId | null;
+  status: SessionStatus;
   title: string;
-  artifactType: ArtifactType | null;
-  phase: ConversationPhase;
-  metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
+}
+
+// ------ Messages -------
+
+export type MessageRole = 'user' | 'assistant';
+
+export interface MessageMetadata {
+  phase?: string;
+  ragChunksUsed?: number;
+  artifactGenerated?: boolean;
 }
 
 export interface Message {
@@ -64,95 +67,65 @@ export interface Message {
   sessionId: string;
   role: MessageRole;
   content: string;
-  metadata: Record<string, unknown>;
+  metadata: MessageMetadata | null;
   createdAt: string;
 }
+
+// ------ Artifacts -------
 
 export interface Artifact {
   id: string;
   sessionId: string;
-  type: ArtifactType;
+  userId: string;
+  role: RoleId;
+  artifactTypeId: ArtifactTypeId;
+  title: string;
   content: string;
   version: number;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface KnowledgeItem {
+// ------ RAG -------
+
+export interface KnowledgeBaseEntry {
   id: string;
+  role: RoleId | 'shared';
+  topic: string;
+  chunkIndex: number;
   content: string;
-  source: string;
-  role: Role | "shared";
-  similarity?: number;
+  embedding?: number[];
 }
 
-// ------ API request / response shapes -------
+export interface RagSearchResult {
+  content: string;
+  topic: string;
+  role: RoleId | 'shared';
+  similarity: number;
+}
+
+// ------ API -------
+
+export interface ApiResponse<T> {
+  data?: T;
+  error?: string;
+}
 
 export interface ChatRequest {
   sessionId: string;
   message: string;
-  role: Role;
+  role: RoleId;
   mode: SessionMode;
-  artifactType?: ArtifactType;
+  artifactTypeId?: ArtifactTypeId;
 }
 
-export interface ChatResponse {
-  sessionId: string;
-  message: string;
-  phase?: ConversationPhase;
-  artifactReady?: boolean;
-}
-
-export interface CreateSessionRequest {
-  mode: SessionMode;
-  role: Role;
-  artifactType?: ArtifactType;
-}
-
-export interface CreateSessionResponse {
-  session: Session;
-}
-
-export interface ListSessionsResponse {
-  sessions: Session[];
-}
-
-export interface GetArtifactResponse {
-  artifact: Artifact | null;
-}
-
-export interface SaveArtifactRequest {
-  sessionId: string;
-  type: ArtifactType;
+export interface StreamChunk {
+  type: 'text' | 'artifact' | 'phase-change' | 'error';
   content: string;
+  metadata?: Record<string, unknown>;
 }
 
-export interface SaveArtifactResponse {
-  artifact: Artifact;
-}
+// ------ Backward-compatible aliases -------
 
-export interface RagSearchRequest {
-  query: string;
-  role: Role | "shared";
-  limit?: number;
-}
-
-export interface RagSearchResponse {
-  results: KnowledgeItem[];
-  context: string;
-}
-
-// ------ Component prop shapes -------
-
-export interface RoleOption {
-  id: Role;
-  label: string;
-  description: string;
-  artifactTypes: ArtifactTypeOption[];
-}
-
-export interface ArtifactTypeOption {
-  id: ArtifactType;
-  label: string;
-  description: string;
-}
+/** @deprecated Use RoleId */
+export type Role = RoleId;

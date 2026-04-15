@@ -1,10 +1,10 @@
-import type { RoleOption } from "@/lib/types";
+import type { RoleDefinition, ArtifactType, RoleId, ArtifactTypeId } from '@/lib/types';
 
 // ------ Model config -------
 
-export const MODEL_ID = "claude-sonnet-4-6" as const;
+export const MODEL = 'claude-sonnet-4-20250514' as const;
 export const MAX_TOKENS = 4096 as const;
-export const EMBEDDING_MODEL = "text-embedding-3-small" as const;
+export const EMBEDDING_MODEL = 'text-embedding-3-small' as const;
 export const EMBEDDING_DIMENSIONS = 1536 as const;
 
 // ------ RAG config -------
@@ -12,87 +12,186 @@ export const EMBEDDING_DIMENSIONS = 1536 as const;
 export const RAG_MATCH_COUNT = 5 as const;
 export const RAG_MATCH_THRESHOLD = 0.7 as const;
 
-// ------ Role & artifact definitions -------
+// ------ Artifact type definitions -------
 
-export const ROLES: RoleOption[] = [
+export const ARTIFACT_TYPES: ArtifactType[] = [
+  // Product Owner artifacts
   {
-    id: "product-owner",
-    label: "Product Owner",
-    description:
-      "Define and prioritize the product backlog. Write user stories, acceptance criteria, and sprint goals.",
-    artifactTypes: [
-      {
-        id: "user-story",
-        label: "User Story",
-        description: "A standard As a / I want / So that user story with acceptance criteria.",
-      },
-      {
-        id: "user-story-bug",
-        label: "Bug Report (User Story format)",
-        description: "A bug captured as a structured user story with reproduction steps.",
-      },
-      {
-        id: "epic",
-        label: "Epic",
-        description: "A large body of work that encompasses multiple user stories.",
-      },
-      {
-        id: "sprint-goal",
-        label: "Sprint Goal",
-        description: "A concise statement of what the team intends to achieve this sprint.",
-      },
-      {
-        id: "acceptance-criteria",
-        label: "Acceptance Criteria",
-        description: "Given / When / Then criteria for an existing story.",
-      },
-      {
-        id: "backlog-refinement-notes",
-        label: "Backlog Refinement Notes",
-        description: "Structured notes capturing decisions and open questions from a refinement session.",
-      },
+    id: 'user-story-bug',
+    name: 'User Story: Bug',
+    description: 'A bug captured in structured user story format with reproduction steps and impact assessment.',
+    requiredSections: [
+      'Bug Description',
+      'Current Behavior',
+      'Expected Behavior',
+      'Reproduction Steps',
+      'Impact Assessment',
+      'Acceptance Criteria',
+      'Edge Cases',
+      'Open Questions',
     ],
   },
   {
-    id: "business-analyst",
-    label: "Business Analyst",
-    description:
-      "Elicit, analyse, and document requirements. Bridge stakeholders and development teams.",
-    artifactTypes: [
-      {
-        id: "business-requirements-document",
-        label: "Business Requirements Document (BRD)",
-        description: "A formal document capturing business objectives, scope, and requirements.",
-      },
-      {
-        id: "functional-specification",
-        label: "Functional Specification",
-        description: "Detailed functional requirements describing system behaviour.",
-      },
-      {
-        id: "use-case",
-        label: "Use Case",
-        description: "A structured use case with actors, preconditions, and flow of events.",
-      },
-      {
-        id: "process-map",
-        label: "Process Map (text/structured)",
-        description: "A textual or structured representation of a business process.",
-      },
-      {
-        id: "gap-analysis",
-        label: "Gap Analysis",
-        description: "Current state vs future state analysis identifying gaps and recommendations.",
-      },
-      {
-        id: "stakeholder-analysis",
-        label: "Stakeholder Analysis",
-        description: "Identification and assessment of key stakeholders and their interests.",
-      },
+    id: 'user-story-feature',
+    name: 'User Story: Feature',
+    description: 'A new capability described from the user perspective with full acceptance criteria.',
+    requiredSections: [
+      'User Persona',
+      'Feature Description',
+      'Business Value',
+      'Feasibility Notes',
+      'Dependencies',
+      'Acceptance Criteria',
+      'Edge Cases',
+      'Definition of Done',
+    ],
+  },
+  {
+    id: 'user-story-enhancement',
+    name: 'User Story: Enhancement',
+    description: 'An improvement to an existing capability with clear scope boundaries.',
+    requiredSections: [
+      'Enhancement Description',
+      'Current State',
+      'Desired State',
+      'Scope Boundaries',
+      'Acceptance Criteria',
+      'Regression Considerations',
+    ],
+  },
+  {
+    id: 'sprint-goal',
+    name: 'Sprint Goal Statement',
+    description: 'A concise statement of team intent for the sprint with measurable success criteria.',
+    requiredSections: [
+      'Sprint Goal',
+      'Business Outcome',
+      'Key Deliverables',
+      'Success Criteria',
+    ],
+  },
+  // Business Analyst artifacts
+  {
+    id: 'brd',
+    name: 'Business Requirements Document',
+    description: 'A formal document capturing business objectives, stakeholders, and requirements.',
+    requiredSections: [
+      'Executive Summary',
+      'Business Objectives',
+      'Stakeholders',
+      'Functional Requirements',
+      'Non-Functional Requirements',
+      'Regulatory Requirements',
+      'Operational Requirements',
+      'Assumptions and Constraints',
+      'Traceability Matrix',
+    ],
+  },
+  {
+    id: 'process-map',
+    name: 'Current State Process Map',
+    description: 'A structured representation of the current business process with gap analysis.',
+    requiredSections: [
+      'Process Overview',
+      'Actors and Roles',
+      'Process Steps',
+      'Pain Points',
+      'Gap Analysis',
+      'Recommendations',
+    ],
+  },
+  {
+    id: 'feasibility-assessment',
+    name: 'Feasibility Assessment',
+    description: 'A multi-dimensional feasibility analysis with risk register and recommendation.',
+    requiredSections: [
+      'Overview',
+      'Technical Feasibility',
+      'Operational Feasibility',
+      'Financial Feasibility',
+      'Regulatory Feasibility',
+      'Timeline Assessment',
+      'Risk Register',
+      'Recommendation',
+    ],
+  },
+  {
+    id: 'stakeholder-analysis',
+    name: 'Stakeholder Analysis',
+    description: 'Identification and assessment of stakeholders with communication plan.',
+    requiredSections: [
+      'Stakeholder Inventory',
+      'Influence/Interest Matrix',
+      'Disposition Assessment',
+      'Communication Plan',
+      'Risk Factors',
     ],
   },
 ];
 
-export const ROLE_MAP: Record<string, RoleOption> = Object.fromEntries(
-  ROLES.map((r) => [r.id, r])
+const ARTIFACT_TYPE_MAP: Map<ArtifactTypeId, ArtifactType> = new Map(
+  ARTIFACT_TYPES.map((a) => [a.id, a])
 );
+
+// ------ Role definitions -------
+
+export const ROLE_DEFINITIONS: RoleDefinition[] = [
+  {
+    id: 'product-owner',
+    name: 'Product Owner',
+    description:
+      'Define and prioritise the product backlog. Write user stories, acceptance criteria, and sprint goals.',
+    icon: 'clipboard-list',
+    artifactTypes: ['user-story-bug', 'user-story-feature', 'user-story-enhancement', 'sprint-goal'],
+    advisoryCapabilities: [
+      'Backlog prioritisation (RICE, WSJF, MoSCoW)',
+      'Stakeholder negotiation coaching',
+      'Sprint planning facilitation',
+      'General PO mentoring',
+    ],
+  },
+  {
+    id: 'business-analyst',
+    name: 'Business Analyst',
+    description:
+      'Elicit, analyse, and document requirements. Bridge stakeholders and development teams.',
+    icon: 'bar-chart',
+    artifactTypes: ['brd', 'process-map', 'feasibility-assessment', 'stakeholder-analysis'],
+    advisoryCapabilities: [
+      'Requirements elicitation coaching',
+      'Process improvement analysis',
+      'Data analysis framing',
+      'Stakeholder conflict resolution',
+    ],
+  },
+];
+
+const ROLE_MAP: Map<RoleId, RoleDefinition> = new Map(
+  ROLE_DEFINITIONS.map((r) => [r.id, r])
+);
+
+// ------ Helper functions -------
+
+export function getRoleById(id: RoleId): RoleDefinition {
+  const role = ROLE_MAP.get(id);
+  if (!role) throw new Error(`Unknown role: ${id}`);
+  return role;
+}
+
+export function getArtifactType(id: ArtifactTypeId): ArtifactType {
+  const artifact = ARTIFACT_TYPE_MAP.get(id);
+  if (!artifact) throw new Error(`Unknown artifact type: ${id}`);
+  return artifact;
+}
+
+// ------ Legacy alias (used by some components) -------
+
+/** @deprecated Use ROLE_DEFINITIONS */
+export const ROLES = ROLE_DEFINITIONS.map((r) => ({
+  ...r,
+  label: r.name,
+  artifactTypes: r.artifactTypes.map((id) => {
+    const at = ARTIFACT_TYPE_MAP.get(id);
+    return { id, label: at?.name ?? id, description: at?.description ?? '' };
+  }),
+}));

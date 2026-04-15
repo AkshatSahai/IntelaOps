@@ -1,6 +1,7 @@
-import OpenAI from "openai";
-import type { KnowledgeItem, Role, RagSearchResponse } from "@/lib/types";
-import { EMBEDDING_MODEL, RAG_MATCH_COUNT, RAG_MATCH_THRESHOLD } from "@/lib/constants";
+import OpenAI from 'openai';
+import type { RoleId, ArtifactTypeId, RagSearchResult } from '@/lib/types';
+import { EMBEDDING_MODEL, RAG_MATCH_COUNT, RAG_MATCH_THRESHOLD } from '@/lib/constants';
+import { createClient } from '@/lib/supabase/server';
 
 function getOpenAI(): OpenAI {
   return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -14,49 +15,71 @@ export async function generateEmbedding(text: string): Promise<number[]> {
   });
   const embedding = response.data[0]?.embedding;
   if (!embedding) {
-    throw new Error("No embedding returned from OpenAI");
+    throw new Error('No embedding returned from OpenAI');
   }
   return embedding;
 }
 
 export async function searchKnowledgeBase(
   query: string,
-  role: Role | "shared",
-  limit: number = RAG_MATCH_COUNT
-): Promise<KnowledgeItem[]> {
-  // TODO: implement pgvector search via Supabase RPC
-  // Placeholder until DB is connected
-  void query;
-  void role;
-  void limit;
-  return [];
-}
-
-export async function retrieveContext(
-  query: string,
-  role: Role
-): Promise<RagSearchResponse> {
-  // Search role-specific + shared content
-  const [roleResults, sharedResults] = await Promise.all([
-    searchKnowledgeBase(query, role),
-    searchKnowledgeBase(query, "shared"),
-  ]);
-
-  const results = [...roleResults, ...sharedResults]
-    .filter((r) => (r.similarity ?? 0) >= RAG_MATCH_THRESHOLD)
-    .slice(0, RAG_MATCH_COUNT);
-
-  const context =
-    results.length > 0
-      ? results.map((r) => `[${r.source}]\n${r.content}`).join("\n\n---\n\n")
-      : "No specific knowledge base context found for this query.";
-
-  return { results, context };
-}
-
-export function formatRagContext(items: KnowledgeItem[]): string {
-  if (items.length === 0) {
-    return "No additional context available.";
+  role: RoleId,
+  artifactTypeId?: ArtifactTypeId
+): Promise<string> {
+  let embedding: number[];
+  try {
+    embedding = await generateEmbedding(query);
+  } catch {
+    return 'No knowledge base context available.';
   }
-  return items.map((item) => `### ${item.source}\n${item.content}`).join("\n\n");
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc('match_knowledge_base', {
+      query_embedding: embedding,
+      match_role: role,
+      match_artifact_type: artifactTypeId ?? null,
+      match_count: RAG_MATCH_COUNT,
+      match_threshold: RAG_MATCH_THRESHOLD,
+    });
+
+    if (error || !data) {
+      return 'No knowledge base context available.';
+    }
+
+    const results = (data as RagSearchResult[]).filter(
+      (r) => r.similarity >= RAG_MATCH_THRESHOLD
+    );
+
+    if (results.length === 0) {
+      return 'No specific knowledge base context found for this query.';
+    }
+
+    return results
+      .map((r) => `[${r.topic}]\n${r.content}`)
+      .join('\n\n---\n\n');
+  } catch {
+    return 'No knowledge base context available.';
+  }
+}
+
+export async function upsertKnowledgeChunk(
+  role: RoleId | 'shared',
+  topic: string,
+  chunkIndex: number,
+  content: string
+): Promise<void> {
+  const embedding = await generateEmbedding(content);
+  const supabase = await createClient();
+
+  const { error } = await supabase.from('knowledge_base').upsert({
+    role,
+    topic,
+    chunk_index: chunkIndex,
+    content,
+    embedding,
+  });
+
+  if (error) {
+    throw new Error(`Failed to upsert knowledge chunk: ${error.message}`);
+  }
 }
